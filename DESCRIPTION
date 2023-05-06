@@ -1,0 +1,34 @@
+Package: numerical.mle
+Type: Package
+Title: Numerical maximum likelihood estimation
+Version: 0.1.0
+Authors@R: 
+    person("Alexander", "Towell", , "lex@metafunctor.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6443-9897"))
+Maintainer: Alexander Towell <lex@metafunctor.com>
+Description: We define a set of functions for solving common MLE problems.
+License: MIT + file LICENSE
+Encoding: UTF-8
+ByteCompile: true
+LazyData: true
+Imports:
+    CDFt,
+    zoo,
+    mvtnorm,
+    MASS,
+    stats,
+    numDeriv,
+    dplyr
+RoxygenNote: 7.2.3
+URL: https://github.com/queelius/numerical.mle,
+    https://queelius.github.io/numerical.mle/
+BugReports: https://github.com/queelius/numerical.mle/issues
+Suggests: 
+    rmarkdown,
+    dplyr,
+    knitr,
+    ggplot2,
+    tibble,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
