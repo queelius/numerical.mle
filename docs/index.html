@@ -63,8 +63,39 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-We define a set of functions for solving common MLE problems.
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="r-package-numericalmle">R package: <code>numerical.mle</code>
+<a class="anchor" aria-label="anchor" href="#r-package-numericalmle"></a>
+</h1></div>
+<!-- badges: start --><!-- badges: end --><p>A set of numeric MLE solvers.</p>
+<p>This is very early alpha. I just started this project and it is not ready for use yet. I just took a bunch of numerical code from <code>algebraic.mle</code> and put it in this separate package. I will be adding more numerical solvers and more examples in the future. Most of the code probably does not even work yet, since I haven’t tested it.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install <code>numerical.mle</code> from <a href="https://github.com/queelius/numerical.mle" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"queelius/numerical.mle"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="api">API<a class="anchor" aria-label="anchor" href="#api"></a>
+</h2>
+<p>A set of methods for fitting log-likelihood functions to data. We provide various adapters for log-likelihood functions, including penalty adapters (for constrained MLEs) and transformation adapters (for transformed MLEs).</p>
+<p>The object representing a fitted model is a type of <code>mle</code> object, the maximum likelihood estimator of the model with respect to observed data. We use the R package for this purpose. (See <a href="https://github.com/queelius/algebraic.mle" class="external-link">here</a>).</p>
+<p>The API mostly consists of generic methods with implementations for various <code>mle</code> type objects. For a full list of functions, see the <a href="https://queelius.github.io/numerical.mle/reference/index.html">function reference</a> for <code>numerical.mle</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
+<div class="section level3">
+<h3 id="fitting-a-linear-regression-model">Fitting a linear regression model<a class="anchor" aria-label="anchor" href="#fitting-a-linear-regression-model"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/queelius/numerical.mle" class="external-link">numerical.mle</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/queelius/algebraic.mle" class="external-link">algebraic.mle</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
