@@ -5,8 +5,7 @@
 #' @param x the `mle` object
 #' @param ... additional arguments to pass
 #' @export
-is_converged <- function(x) {
-    stopifnot(is_mle_numerical(x))
+is_converged.mle_numerical <- function(x) {
     x$converged
 }
 
@@ -35,18 +34,19 @@ is_mle_numerical <- function(x) {
 #' sol <- mle_gradient_raphson(theta0 = theta, score = score, loglike = loglike)
 #' num_iterations(sol)
 #' @export 
-num_iterations <- function(x) {
-    stopifnot(is_mle_numerical(x))
+num_iterations.mle_numerical <- function(x, ...) {
     x$iter
 }
 
 #' mle_numerical
 #' 
 #' a constructor for the mle_numerical class.
+#' @importFrom algebraic.mle mle
 #' @export
 mle_numerical <- function(theta.hat, loglike, score, info, sigma, iter, converged) {
     stopifnot(is.numeric(iter))
     stopifnot(is.logical(converged))
+
     sol <- mle(
         theta.hat = theta.hat,
         loglike = loglike,
@@ -60,19 +60,6 @@ mle_numerical <- function(theta.hat, loglike, score, info, sigma, iter, converge
     sol
 }
 
-#' loglikelihood constructor
-#' penalizes
-penalize_loglike <- function(loglike, penalty, options)
-{
-    stopifnot(is.function(loglike))
-    stopifnot(is.numeric(penalty), penalty > 0)
-    function(theta) {
-        theta_p <- options$proj(theta)
-        options$D(theta - theta_p) + loglike(theta_p)
-    }
-}
-
-
 #' stochastic loglikelihood constructor
 #' good for large datasets. if applied to a gradient ascent method, this
 #' will perform stochastic gradient ascent.
@@ -82,13 +69,12 @@ penalize_loglike <- function(loglike, penalty, options)
 #' @param obs a matrix, vector, or data frame of observations
 #' @param options a list of options
 #' @export
-stochastic_loglike <- function(log.p, obs, options)
+stochastic_loglike <- function(log_density, data, m, replace = FALSE)
 {
-    resample <- function(obs) {
-        obs[sample(length(obs), length(obs), replace = TRUE)]
-    }
-    stopifnot(is.function(loglike))
+    stopifnot(m <= length(data))
+    stopifnot(is.function(log_density))
+
     function(theta) {
-        sum(log.p(resample(obs), theta))
+        sum(log_density(sample(x = data, size = m, replace = resample), theta))
     }
 }

@@ -6,10 +6,7 @@
 #' 
 #' @export
 mle_sim_anneal <- function(theta0, loglike = NULL, options = list()) {
-    if (!is.null(loglike)) {
-        options$loglike <- loglike
-    }
-    sol <- sim_anneal(x0 = theta0, obj_fn = options$loglike, options = options)
+    sol <- sim_anneal(x0 = theta0, obj_fn = loglike, options = options)
     mle.sol <- mle(
         theta.hat = sol$argmax,
         loglike = sol$max,
