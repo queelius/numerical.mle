@@ -160,7 +160,12 @@ mle_local_search <- function(
         cat("Failed to converge\n")
     }
 
-    sol <- mle(theta.hat = theta0, loglike = max,
+    loglike_value <- NULL
+    if (!is.null(options$loglike)) {
+        loglike_value <- options$loglike(theta0)
+    }
+
+    sol <- mle(theta.hat = theta0, loglike = loglike_value,
         superclasses = c("mle_local_search", "mle_numerical"))
     sol$iter <- iter
     sol$converged <- converged

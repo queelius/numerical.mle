@@ -16,7 +16,7 @@ mle_gradient_ascent <- function(theta0, score, options) {
     }
     sol <- mle_local_search(theta0 = theta0, dir = score, options = options)
     class(sol) <- c("mle_gradient_ascent", class(sol))
-    if (options$loglike) {
+    if (!is.null(options$loglike)) {
         sol$info <- -hessian(options$loglike, sol$theta.hat)
         sol$sigma <- ginv(sol$info)
     }

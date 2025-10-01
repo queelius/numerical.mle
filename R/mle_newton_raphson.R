@@ -32,12 +32,12 @@ mle_newton_raphson <- function(
     } else {
         covar <- function(x) ginv(fim(x))
     }
-    dir <- function(x) covar(x) %*% score(x)
+    dir <- function(x) as.vector(covar(x) %*% score(x))
 
     sol <- mle_local_search(theta0 = theta0, dir = dir, options = options)
     class(sol) <- c("mle_newton_raphson", class(sol))
     sol$score <- score(sol$theta.hat)
     sol$sigma <- covar(sol$theta.hat)
-    sol$info <- fim(sol$theta)
+    sol$info <- fim(sol$theta.hat)
     sol
 }

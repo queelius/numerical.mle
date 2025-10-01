@@ -1,11 +1,16 @@
 #' is_converged
-#' 
+#'
 #' Function to determine whether a `mle_numerical` object has converged.
 #'
 #' @param x the `mle` object
 #' @param ... additional arguments to pass
 #' @export
-is_converged.mle_numerical <- function(x) {
+is_converged <- function(x, ...) {
+    UseMethod("is_converged")
+}
+
+#' @export
+is_converged.mle_numerical <- function(x, ...) {
     x$converged
 }
 
@@ -33,7 +38,12 @@ is_mle_numerical <- function(x) {
 #' }
 #' sol <- mle_gradient_raphson(theta0 = theta, score = score, loglike = loglike)
 #' num_iterations(sol)
-#' @export 
+#' @export
+num_iterations <- function(x, ...) {
+    UseMethod("num_iterations")
+}
+
+#' @export
 num_iterations.mle_numerical <- function(x, ...) {
     x$iter
 }
@@ -75,6 +85,6 @@ stochastic_loglike <- function(log_density, data, m, replace = FALSE)
     stopifnot(is.function(log_density))
 
     function(theta) {
-        sum(log_density(sample(x = data, size = m, replace = resample), theta))
+        sum(log_density(sample(x = data, size = m, replace = replace), theta))
     }
 }
