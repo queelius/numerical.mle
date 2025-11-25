@@ -2,18 +2,97 @@
 % Please edit documentation in R/mle_gradient_ascent.R
 \name{mle_gradient_ascent}
 \alias{mle_gradient_ascent}
-\title{mle_gradient_ascent}
+\title{Maximum likelihood estimation via gradient ascent}
 \usage{
-mle_gradient_ascent(theta0, score, options)
+mle_gradient_ascent(
+  loglike,
+  score,
+  theta0,
+  config = mle_config_gradient(),
+  constraint = mle_constraint()
+)
 }
 \arguments{
-\item{theta0}{initial guess of MLE}
+\item{loglike}{Log-likelihood function taking theta as input}
 
-\item{score}{score function, the gradient of a log-likelihood}
+\item{score}{Score function (gradient of log-likelihood) taking theta as input}
+
+\item{theta0}{Initial parameter guess (numeric vector)}
+
+\item{config}{Configuration object (mle_config_gradient or mle_config_linesearch).
+Use mle_config_linesearch() for adaptive step sizes (recommended),
+or mle_config_gradient() for fixed step size.}
+
+\item{constraint}{Optional domain constraints (mle_constraint object)}
 }
 \value{
-an object of class `mle_gradient_ascent`, which is an `mle` object
+mle_numerical object with class mle_gradient_ascent containing:
+  \item{theta.hat}{MLE estimate}
+  \item{loglike}{Log-likelihood at MLE}
+  \item{score}{Score vector at MLE (should be near zero)}
+  \item{info}{Fisher information matrix (negative Hessian)}
+  \item{sigma}{Covariance matrix (inverse of Fisher information)}
+  \item{iter}{Number of iterations}
+  \item{converged}{Convergence status}
+  \item{config}{Configuration used}
+  \item{path}{Optimization path (if trace=TRUE in config)}
 }
 \description{
-MLE method using gradient ascent
+Performs gradient ascent optimization to find the MLE. This method
+uses the score function (gradient of log-likelihood) to iteratively
+improve parameter estimates.
+}
+\examples{
+\dontrun{
+# Normal distribution MLE
+data <- rnorm(100, mean = 5, sd = 2)
+
+loglike <- function(theta) {
+  sum(dnorm(data, mean = theta[1], sd = theta[2], log = TRUE))
+}
+
+score <- function(theta) {
+  mu <- theta[1]
+  sigma <- theta[2]
+  c(
+    sum((data - mu) / sigma^2),
+    sum((data - mu)^2 / sigma^3 - 1/sigma)
+  )
+}
+
+# With line search (recommended)
+result <- mle_gradient_ascent(
+  loglike = loglike,
+  score = score,
+  theta0 = c(0, 1),
+  config = mle_config_linesearch(max_step = 1.0)
+)
+
+# With fixed step size
+result <- mle_gradient_ascent(
+  loglike = loglike,
+  score = score,
+  theta0 = c(0, 1),
+  config = mle_config_gradient(eta = 0.1)
+)
+
+# With constraints (positive variance only)
+constraint <- mle_constraint(
+  support = function(theta) theta[2] > 0,
+  project = function(theta) c(theta[1], max(theta[2], 1e-8))
+)
+
+result <- mle_gradient_ascent(
+  loglike = loglike,
+  score = score,
+  theta0 = c(0, 1),
+  config = mle_config_linesearch(),
+  constraint = constraint
+)
+
+# Check convergence
+print(result$converged)
+print(result$theta.hat)
+print(result$score)  # Should be near zero
+}
 }

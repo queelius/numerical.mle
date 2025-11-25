@@ -1,4 +1,75 @@
 url: https://queelius.github.io/numerical.mle/
+
 template:
   bootstrap: 5
+  bootswatch: flatly
 
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Getting Started
+        href: articles/getting-started.html
+
+reference:
+- title: Configuration
+  desc: Create configuration objects for optimization algorithms
+  contents:
+  - mle_config
+  - mle_config_gradient
+  - mle_config_linesearch
+  - mle_constraint
+  - is_mle_config
+  - is_mle_constraint
+
+- title: Core Solvers
+  desc: Main optimization algorithms
+  contents:
+  - mle_gradient_ascent
+  - mle_newton_raphson
+
+- title: Meta-Solvers
+  desc: Global optimization strategies
+  contents:
+  - mle_grid_search
+  - mle_random_restart
+
+- title: Convenience Wrappers
+  desc: Quick access to solvers with sensible defaults
+  contents:
+  - mle_grad
+  - mle_nr
+  - with_constraint
+
+- title: Function Transformers
+  desc: Transform log-likelihood functions
+  contents:
+  - with_subsampling
+  - with_penalty
+  - penalty_l1
+  - penalty_l2
+  - penalty_elastic_net
+  - compose
+
+- title: Generic Methods
+  desc: Methods for mle_numerical objects
+  contents:
+  - is_converged
+  - is_mle_numerical
+  - num_iterations
+  - mle_numerical
+
+- title: Package
+  desc: Package documentation
+  contents:
+  - numerical.mle
+
+articles:
+- title: Getting Started
+  navbar: ~
+  contents:
+  - getting-started

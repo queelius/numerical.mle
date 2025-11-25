@@ -70,21 +70,3 @@ mle_numerical <- function(theta.hat, loglike, score, info, sigma, iter, converge
     sol
 }
 
-#' stochastic loglikelihood constructor
-#' good for large datasets. if applied to a gradient ascent method, this
-#' will perform stochastic gradient ascent.
-#' @param log.p log pdf (or pmf) of the parametric model being fit to `obs`
-#' parameters. it can also just be proportional to the log pdf, since sometimes
-#' the normalizing constant is unknown or hard to compute.
-#' @param obs a matrix, vector, or data frame of observations
-#' @param options a list of options
-#' @export
-stochastic_loglike <- function(log_density, data, m, replace = FALSE)
-{
-    stopifnot(m <= length(data))
-    stopifnot(is.function(log_density))
-
-    function(theta) {
-        sum(log_density(sample(x = data, size = m, replace = replace), theta))
-    }
-}

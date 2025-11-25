@@ -1,108 +1,139 @@
-
-
-
-#' mle_grid_search
-#' 
-#' MLE method using grid search
+#' MLE via grid search
+#'
+#' Performs exhaustive grid search over a bounded parameter space.
+#' Optionally refines each grid point using a local solver.
+#'
+#' @param loglike Log-likelihood function
+#' @param lower Lower bounds for parameters (numeric vector)
+#' @param upper Upper bounds for parameters (numeric vector)
+#' @param grid_size Grid resolution. Either a single integer (same resolution
+#'   per dimension) or a vector of integers (one per dimension).
+#' @param refine_solver Optional local solver to refine each grid point.
+#'   If NULL, only evaluates loglike at grid points without refinement.
+#' @param ... Additional arguments passed to refine_solver
+#' @return mle object with best solution found, including:
+#'   \item{theta.hat}{Best parameter estimate}
+#'   \item{loglike}{Log-likelihood at best point}
+#'   \item{grid_size}{Grid resolution used}
+#'   \item{n_evaluated}{Number of grid points evaluated}
+#' @examples
+#' \dontrun{
+#' # Simple grid search without refinement
+#' loglike <- function(theta) {
+#'   -(theta[1]^2 + theta[2]^2)
+#' }
+#'
+#' result <- mle_grid_search(
+#'   loglike = loglike,
+#'   lower = c(-5, -5),
+#'   upper = c(5, 5),
+#'   grid_size = 20
+#' )
+#'
+#' # Grid search with local refinement
+#' score <- function(theta) {
+#'   -2 * theta
+#' }
+#'
+#' result <- mle_grid_search(
+#'   loglike = loglike,
+#'   lower = c(-5, -5),
+#'   upper = c(5, 5),
+#'   grid_size = 10,
+#'   refine_solver = mle_gradient_ascent,
+#'   score = score,
+#'   config = mle_config_gradient(eta = 0.1, max_iter = 20)
+#' )
+#'
+#' # Different resolution per dimension
+#' result <- mle_grid_search(
+#'   loglike = loglike,
+#'   lower = c(-5, -5),
+#'   upper = c(5, 5),
+#'   grid_size = c(20, 10)  # 20 points in dim 1, 10 in dim 2
+#' )
+#' }
 #' @export
+mle_grid_search <- function(
+  loglike,
+  lower,
+  upper,
+  grid_size,
+  refine_solver = NULL,
+  ...
+) {
+  stopifnot(
+    is.function(loglike),
+    is.numeric(lower),
+    is.numeric(upper),
+    length(lower) == length(upper),
+    all(lower <= upper),
+    is.numeric(grid_size), all(grid_size > 0)
+  )
 
-mle_grid_search <- function(loglike, options) {
+  if (!is.null(refine_solver)) {
+    stopifnot(is.function(refine_solver))
+  }
 
-    if (!is.function(loglike)) {
-        stop("loglike must be a function, the log-likelihood")
+  # Generate grid
+  grid <- .generate_grid(lower, upper, grid_size)
+
+  best_result <- NULL
+  best_loglike <- -Inf
+  n_evaluated <- 0
+
+  for (i in seq_len(nrow(grid))) {
+    theta0 <- grid[i, ]
+
+    if (!is.null(refine_solver)) {
+      # Use solver to refine grid point
+      result <- tryCatch(
+        refine_solver(loglike = loglike, theta0 = theta0, ...),
+        error = function(e) NULL
+      )
+    } else {
+      # Just evaluate at grid point
+      ll <- tryCatch(
+        loglike(theta0),
+        error = function(e) -Inf
+      )
+
+      result <- if (!is.na(ll) && !is.nan(ll) && is.finite(ll)) {
+        algebraic.mle::mle(
+          theta.hat = theta0,
+          loglike = ll,
+          superclasses = "mle_grid"
+        )
+      } else {
+        NULL
+      }
     }
 
-    defaults <- list(
-        sup = function(x) TRUE,
-        loglike = NULL,
-        mle_solver = NULL,
-        lower <- NULL,
-        upper <- NULL
-    )
-    options <- modifyList(defaults, options)
+    if (!is.null(result)) {
+      n_evaluated <- n_evaluated + 1
 
-    # subdivide parameter support into a grid each of size `grid_size` (for
-    # along each dimension)
-    grid <- subdivide_region(options$lower, options$upper, options$grid_size)
+      # Get log-likelihood from result
+      current_loglike <- if (!is.null(result$loglike)) {
+        result$loglike
+      } else {
+        tryCatch(loglike(result$theta.hat), error = function(e) -Inf)
+      }
 
-    for (i in 1:nrow(grid)) {
-        theta0 <- grid[i, ]
-        sol <- options$mle_solver(theta0, options)
-        if (is.null(sol)) {
-            next
-        }
-        if (loglike(sol) > loglike(mle)) {
-            mle <- sol
-        }
+      if (is.finite(current_loglike) && current_loglike > best_loglike) {
+        best_result <- result
+        best_loglike <- current_loglike
+      }
     }
-}
+  }
 
+  if (is.null(best_result)) {
+    stop("Grid search found no valid solution")
+  }
 
-#' subdivide_region
-#' @param lower lower bounds of parameter support (vector)
-#' @param upper upper bounds of parameter support (vector)
-#' @param grid_size maximum size of each dimension of each hypercube
-#'                  that makes up the grid
-subdivide_region <- function(lower, upper, grid_size) {
-
-    if (length(lower) != length(upper)) {
-        stop("lower and upper must be the same length")
-    }
-
-    if (any(lower > upper)) {
-        stop("lower must be less than (or equal to) upper")
-    }
-
-    if (any(grid_size <= 0)) {
-        stop("grid_size must be greater than 0")
-    }
-
-    # number of dimensions
-    n <- length(lower)
-
-    # number of hypercubes in each dimension
-    n_hypercubes <- ceiling((upper - lower) / grid_size)
-
-    # number of hypercubes in total
-    n_total <- prod(n_hypercubes)
-
-    # initialize grid
-    grid <- matrix(NA, nrow = n_total, ncol = n)
-
-    # initialize hypercube index
-    hypercube <- rep(1, n)
-
-    # initialize grid index
-    i <- 1
-
-    # loop over hypercubes
-    while (hypercube[1] <= n_hypercubes[1]) {
-
-        # loop over dimensions
-        for (j in 1:n) {
-
-            # set grid value
-            grid[i, j] <- lower[j] + (hypercube[j] - 1) * grid_size[j]
-
-            # increment hypercube index
-            hypercube[j] <- hypercube[j] + 1
-
-            # if hypercube index exceeds number of hypercubes in dimension
-            if (hypercube[j] > n_hypercubes[j]) {
-
-                # reset hypercube index
-                hypercube[j] <- 1
-            } else {
-
-                # break out of loop over dimensions
-                break
-            }
-        }
-
-        # increment grid index
-        i <- i + 1
-    }
-
-    # return grid
-    grid
+  # Add meta information
+  class(best_result) <- c("mle_grid_search", class(best_result))
+  best_result$grid_size <- grid_size
+  best_result$n_evaluated <- n_evaluated
+  best_result$n_grid_points <- nrow(grid)
+  best_result
 }

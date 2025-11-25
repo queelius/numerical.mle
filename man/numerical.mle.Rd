@@ -2,6 +2,7 @@
 % Please edit documentation in R/numerical.mle.R
 \docType{package}
 \name{numerical.mle}
+\alias{numerical.mle-package}
 \alias{numerical.mle}
 \title{`numerical.mle`: A package for numerically solving maximum likelihood estimators
 from log-likelihood functions.}
@@ -9,4 +10,17 @@ from log-likelihood functions.}
 The object representing a fitted model is a type of `mle` object, the maximum
 likelihood estimator of the model with respect to observed data. We use the
 R package `algebraic.mle` to represent these objects.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/queelius/numerical.mle}
+  \item \url{https://queelius.github.io/numerical.mle/}
+  \item Report bugs at \url{https://github.com/queelius/numerical.mle/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Alexander Towell \email{lex@metafunctor.com} (\href{https://orcid.org/0000-0001-6443-9897}{ORCID})
+
 }

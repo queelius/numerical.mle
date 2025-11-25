@@ -4,7 +4,7 @@
 \alias{is_converged}
 \title{is_converged}
 \usage{
-is_converged(x)
+is_converged(x, ...)
 }
 \arguments{
 \item{x}{the `mle` object}

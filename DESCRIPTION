@@ -12,14 +12,9 @@ Encoding: UTF-8
 ByteCompile: true
 LazyData: true
 Imports:
-    CDFt,
-    zoo,
-    mvtnorm,
-    MASS,
-    stats,
-    numDeriv,
-    dplyr
-RoxygenNote: 7.2.3
+    algebraic.mle,
+    stats
+RoxygenNote: 7.3.3
 URL: https://github.com/queelius/numerical.mle,
     https://queelius.github.io/numerical.mle/
 BugReports: https://github.com/queelius/numerical.mle/issues

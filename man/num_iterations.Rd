@@ -4,7 +4,7 @@
 \alias{num_iterations}
 \title{num_iterations}
 \usage{
-num_iterations(x)
+num_iterations(x, ...)
 }
 \arguments{
 \item{x}{the `mle` object}
