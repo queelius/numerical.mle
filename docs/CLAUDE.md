@@ -22,23 +22,33 @@ currently available.
 
 ### Building and Documentation
 
-- **Build package**: `R CMD build .` or in R: `devtools::build()`
-- **Install locally**: `devtools::install()` or
-  `devtools::install_github("queelius/numerical.mle")`
-- **Load for development**: `devtools::load_all()`
-- **Generate documentation**: `devtools::document()` (runs roxygen2)
+- **Build package**: `R CMD build .` or in R:
+  [`devtools::build()`](https://devtools.r-lib.org/reference/build.html)
+- **Install locally**:
+  [`devtools::install()`](https://devtools.r-lib.org/reference/install.html)
+  or `devtools::install_github("queelius/numerical.mle")`
+- **Load for development**:
+  [`devtools::load_all()`](https://devtools.r-lib.org/reference/load_all.html)
+- **Generate documentation**:
+  [`devtools::document()`](https://devtools.r-lib.org/reference/document.html)
+  (runs roxygen2)
 - **Build README**: Knit `README.Rmd` to generate `README.md`
 - **Build pkgdown site**:
   [`pkgdown::build_site()`](https://pkgdown.r-lib.org/reference/build_site.html)
 
 ### Testing
 
-- **Run all tests**: `devtools::test()` or
-  `testthat::test_dir("tests/testthat")`
+- **Run all tests**:
+  [`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
+  or `testthat::test_dir("tests/testthat")`
 - **Run specific test file**:
   `testthat::test_file("tests/testthat/test-*.R")`
-- **Check package**: `devtools::check()` (comprehensive R CMD check)
-- **Test coverage**: `covr::package_coverage()` to analyze test coverage
+- **Check package**:
+  [`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
+  (comprehensive R CMD check)
+- **Test coverage**:
+  [`covr::package_coverage()`](http://covr.r-lib.org/reference/package_coverage.md)
+  to analyze test coverage
 - **Note**: Tests use a mock
   [`algebraic.mle::mle()`](https://queelius.github.io/algebraic.mle/reference/mle.html)
   constructor (in `tests/testthat/helper-mock-mle.R`) so tests can run
@@ -240,5 +250,7 @@ that computes a promising search direction: - Gradient ascent uses
 - 53+ test cases covering core functionality
 - All unit tests passing for tested components
 - Some integration tests may need parameter tuning for convergence
-- Run `devtools::test()` before committing changes
+- Run
+  [`devtools::test()`](https://devtools.r-lib.org/reference/test.html)
+  before committing changes
 - See `TESTING_SUMMARY.md` for detailed test coverage analysis

@@ -5,3 +5,5 @@
 .DS_Store
 /Meta/
 .RData
+*.Rcheck/
+..Rcheck/

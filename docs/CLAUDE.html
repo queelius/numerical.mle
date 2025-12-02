@@ -49,16 +49,16 @@
 <div class="section level3">
 <h3 id="building-and-documentation">Building and Documentation<a class="anchor" aria-label="anchor" href="#building-and-documentation"></a></h3>
 <ul><li>
-<strong>Build package</strong>: <code>R CMD build .</code> or in R: <code>devtools::build()</code>
+<strong>Build package</strong>: <code>R CMD build .</code> or in R: <code><a href="https://devtools.r-lib.org/reference/build.html" class="external-link">devtools::build()</a></code>
 </li>
 <li>
-<strong>Install locally</strong>: <code>devtools::install()</code> or <code>devtools::install_github("queelius/numerical.mle")</code>
+<strong>Install locally</strong>: <code><a href="https://devtools.r-lib.org/reference/install.html" class="external-link">devtools::install()</a></code> or <code>devtools::install_github("queelius/numerical.mle")</code>
 </li>
 <li>
-<strong>Load for development</strong>: <code>devtools::load_all()</code>
+<strong>Load for development</strong>: <code><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">devtools::load_all()</a></code>
 </li>
 <li>
-<strong>Generate documentation</strong>: <code>devtools::document()</code> (runs roxygen2)</li>
+<strong>Generate documentation</strong>: <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code> (runs roxygen2)</li>
 <li>
 <strong>Build README</strong>: Knit <code>README.Rmd</code> to generate <code>README.md</code>
 </li>
@@ -69,15 +69,15 @@
 <div class="section level3">
 <h3 id="testing">Testing<a class="anchor" aria-label="anchor" href="#testing"></a></h3>
 <ul><li>
-<strong>Run all tests</strong>: <code>devtools::test()</code> or <code>testthat::test_dir("tests/testthat")</code>
+<strong>Run all tests</strong>: <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code> or <code>testthat::test_dir("tests/testthat")</code>
 </li>
 <li>
 <strong>Run specific test file</strong>: <code>testthat::test_file("tests/testthat/test-*.R")</code>
 </li>
 <li>
-<strong>Check package</strong>: <code>devtools::check()</code> (comprehensive R CMD check)</li>
+<strong>Check package</strong>: <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> (comprehensive R CMD check)</li>
 <li>
-<strong>Test coverage</strong>: <code>covr::package_coverage()</code> to analyze test coverage</li>
+<strong>Test coverage</strong>: <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> to analyze test coverage</li>
 <li>
 <strong>Note</strong>: Tests use a mock <code><a href="https://queelius.github.io/algebraic.mle/reference/mle.html" class="external-link">algebraic.mle::mle()</a></code> constructor (in <code>tests/testthat/helper-mock-mle.R</code>) so tests can run without the full algebraic.mle package installed</li>
 </ul></div>
@@ -255,7 +255,7 @@
 <ul><li>53+ test cases covering core functionality</li>
 <li>All unit tests passing for tested components</li>
 <li>Some integration tests may need parameter tuning for convergence</li>
-<li>Run <code>devtools::test()</code> before committing changes</li>
+<li>Run <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code> before committing changes</li>
 <li>See <code>TESTING_SUMMARY.md</code> for detailed test coverage analysis</li>
 </ul></div>
 </div>
