@@ -14,6 +14,10 @@ navbar:
       menu:
       - text: Getting Started
         href: articles/getting-started.html
+      - text: Theory and Intuition
+        href: articles/theory-and-intuition.html
+      - text: Case Studies
+        href: articles/case-studies.html
 
 reference:
 - title: Configuration
@@ -73,3 +77,8 @@ articles:
   navbar: ~
   contents:
   - getting-started
+
+- title: Understanding MLE
+  contents:
+  - theory-and-intuition
+  - case-studies
