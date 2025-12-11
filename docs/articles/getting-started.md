@@ -23,9 +23,6 @@ devtools::install_github("queelius/numerical.mle")
 
 ``` r
 library(numerical.mle)
-#> Registered S3 method overwritten by 'algebraic.dist':
-#>   method     from 
-#>   print.dist stats
 ```
 
 ## Quick Start

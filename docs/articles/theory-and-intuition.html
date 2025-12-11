@@ -61,7 +61,7 @@
                         <h4 data-toc-skip class="author">Alexander
 Towell</h4>
             
-            <h4 data-toc-skip class="date">2025-12-02</h4>
+            <h4 data-toc-skip class="date">2025-12-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/queelius/numerical.mle/blob/HEAD/vignettes/theory-and-intuition.Rmd" class="external-link"><code>vignettes/theory-and-intuition.Rmd</code></a></small>
       <div class="d-none name"><code>theory-and-intuition.Rmd</code></div>
@@ -292,10 +292,14 @@ step size:</p>
 <p>The <strong>Fisher information matrix</strong>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(\theta)</annotation></semantics></math>
 measures how much information the data carries about
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo></mrow><mrow><mi>∂</mi><mi>θ</mi><mi>∂</mi><msup><mi>θ</mi><mi>T</mi></msup></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">I(\theta) = -E\left[ \frac{\partial^2 \ell}{\partial \theta \partial \theta^T} \right]</annotation></semantics></math></p>
-<p>It’s also related to the variance of the score:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mtext mathvariant="normal">Var</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(\theta) = \text{Var}(s(\theta))</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>.
+It can be defined equivalently as:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo></mrow><mrow><mi>∂</mi><mi>θ</mi><mi>∂</mi><msup><mi>θ</mi><mi>T</mi></msup></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>s</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>T</mi></msup><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">I(\theta) = -E\left[ \frac{\partial^2 \ell}{\partial \theta \partial \theta^T} \right] = E\left[ s(\theta) s(\theta)^T \right]</annotation></semantics></math></p>
+<p>The second form shows that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(\theta)</annotation></semantics></math>
+equals the covariance of the score (since
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>s</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">E[s(\theta)] = 0</annotation></semantics></math>
+at the true parameter).</p>
 <div class="section level3">
 <h3 id="why-it-matters">Why It Matters<a class="anchor" aria-label="anchor" href="#why-it-matters"></a>
 </h3>
@@ -305,11 +309,9 @@ measures how much information the data carries about
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">I(\theta)</annotation></semantics></math>
 describes the curvature of the log-likelihood surface</li>
 <li>
-<strong>Uncertainty</strong>: The inverse
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">I(\theta)^{-1}</annotation></semantics></math>
-approximates the covariance of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>θ</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\theta}</annotation></semantics></math>
-</li>
+<strong>Uncertainty</strong>: The asymptotic variance of the MLE is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Var</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>θ</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mi>I</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\text{Var}(\hat{\theta}) \approx I(\theta)^{-1}</annotation></semantics></math>
+(Cramér-Rao bound)</li>
 <li>
 <strong>Natural scaling</strong>: Different parameters may have
 different scales;

@@ -203,19 +203,22 @@ cat("Converged:", result$converged, "\n")
 ## The Fisher Information Matrix
 
 The **Fisher information matrix** $I(\theta)$ measures how much
-information the data carries about $\theta$:
+information the data carries about $\theta$. It can be defined
+equivalently as:
 
-$$I(\theta) = - E\left\lbrack \frac{\partial^{2}\ell}{\partial\theta\partial\theta^{T}} \right\rbrack$$
+$$I(\theta) = - E\left\lbrack \frac{\partial^{2}\ell}{\partial\theta\partial\theta^{T}} \right\rbrack = E\left\lbrack s(\theta)s(\theta)^{T} \right\rbrack$$
 
-It’s also related to the variance of the score:
-$I(\theta) = \text{Var}\left( s(\theta) \right)$.
+The second form shows that $I(\theta)$ equals the covariance of the
+score (since $E\left\lbrack s(\theta) \right\rbrack = 0$ at the true
+parameter).
 
 ### Why It Matters
 
 1.  **Curvature**: $I(\theta)$ describes the curvature of the
     log-likelihood surface
-2.  **Uncertainty**: The inverse $I(\theta)^{- 1}$ approximates the
-    covariance of $\widehat{\theta}$
+2.  **Uncertainty**: The asymptotic variance of the MLE is
+    $\text{Var}\left( \widehat{\theta} \right) \approx I(\theta)^{- 1}$
+    (Cramér-Rao bound)
 3.  **Natural scaling**: Different parameters may have different scales;
     $I(\theta)$ accounts for this
 
