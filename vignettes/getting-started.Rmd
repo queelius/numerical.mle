@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with numerical.mle"
+title: "Getting Started with compositional.mle"
 author: "Alexander Towell"
 date: "`r Sys.Date()`"
 output:
@@ -7,7 +7,7 @@ output:
     toc: true
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Getting Started with numerical.mle}
+  %\VignetteIndexEntry{Getting Started with compositional.mle}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,180 +23,167 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The `numerical.mle` package provides numerical optimization algorithms for
-maximum likelihood estimation (MLE). It offers a unified, composable API with:
+The `compositional.mle` package provides **composable** optimization strategies for maximum likelihood estimation (MLE). Following SICP principles, it offers:
 
-- **Core solvers**: Gradient ascent and Newton-Raphson optimization
-- **Meta-solvers**: Grid search and random restart for global optimization
-- **Function transformers**: Subsampling for stochastic gradient ascent, penalty terms for regularization
-- **Type-safe configuration**: Explicit configuration objects for convergence criteria
+1. **Primitive solvers** - `gradient_ascent()`, `newton_raphson()`, `bfgs()`, `nelder_mead()`, etc.
+2. **Composition operators** - `%>>%` (sequential), `%|%` (race), `with_restarts()`
+3. **Closure property** - Combining solvers yields a solver
 
 ## Installation
 
 ```{r install, eval=FALSE}
-# Install from GitHub
-devtools::install_github("queelius/numerical.mle")
+devtools::install_github("queelius/compositional.mle")
 ```
 
 ```{r load}
-library(numerical.mle)
+library(compositional.mle)
 ```
 
-## Quick Start
-
-### Basic Example: Normal Distribution MLE
-
-Let's estimate the mean and standard deviation of normally distributed data:
+## Quick Start: Normal Distribution MLE
 
 ```{r quickstart}
 # Generate sample data
 set.seed(123)
 data <- rnorm(100, mean = 5, sd = 2)
 
-# Define log-likelihood
-loglike <- function(theta) {
-  mu <- theta[1]
-  sigma <- theta[2]
-  if (sigma <= 0) return(-Inf)
-  sum(dnorm(data, mean = mu, sd = sigma, log = TRUE))
-}
-
-# Define score function (gradient of log-likelihood)
-score <- function(theta) {
-  mu <- theta[1]
-  sigma <- theta[2]
-  n <- length(data)
-  c(
-    sum(data - mu) / sigma^2,
-    -n / sigma + sum((data - mu)^2) / sigma^3
-  )
-}
-
-# Constrain sigma to be positive
-constraint <- mle_constraint(
-  support = function(theta) theta[2] > 0,
-  project = function(theta) c(theta[1], max(theta[2], 1e-6))
+# Define the problem (separate from solver strategy)
+problem <- mle_problem(
+  loglike = function(theta) {
+    if (theta[2] <= 0) return(-Inf)
+    sum(dnorm(data, theta[1], theta[2], log = TRUE))
+  },
+  score = function(theta) {
+    mu <- theta[1]; sigma <- theta[2]; n <- length(data)
+    c(sum(data - mu) / sigma^2,
+      -n / sigma + sum((data - mu)^2) / sigma^3)
+  },
+  constraint = mle_constraint(
+    support = function(theta) theta[2] > 0,
+    project = function(theta) c(theta[1], max(theta[2], 1e-6))
+  ),
+  theta_names = c("mu", "sigma")
 )
 
-# Fit using gradient ascent with line search
-result <- mle_gradient_ascent(
-  loglike = loglike,
-  score = score,
-  theta0 = c(0, 1),
-  config = mle_config_linesearch(max_iter = 100),
-  constraint = constraint
-)
+# Solve with gradient ascent
+result <- gradient_ascent()(problem, theta0 = c(0, 1))
 
-# View results
 cat("Estimated mean:", result$theta.hat[1], "(true: 5)\n")
 cat("Estimated sd:", result$theta.hat[2], "(true: 2)\n")
-cat("Sample mean:", mean(data), "\n")
-cat("Sample sd:", sd(data), "\n")
 ```
 
-## Configuration Objects
+## The Problem-Solver Separation
 
-The package uses type-safe configuration objects to control optimization behavior.
+The key design principle is separating **what** you're estimating from **how** you estimate it:
 
-### Base Configuration
+```{r problem-solver}
+# The problem encapsulates the statistical model
+print(problem)
 
-```{r config-base}
-# Basic configuration with convergence criteria
-config <- mle_config(
-  max_iter = 200,    # Maximum iterations
-  rel_tol = 1e-6,    # Relative tolerance for convergence
-  trace = FALSE,     # Store optimization path?
-  debug = FALSE      # Print debug output?
-)
+# Solvers are independent strategies
+solver1 <- gradient_ascent(max_iter = 100)
+solver2 <- newton_raphson(max_iter = 50)
+solver3 <- bfgs()
+
+# Same problem, different solvers
+result1 <- solver1(problem, c(0, 1))
+result2 <- solver2(problem, c(0, 1))
+result3 <- solver3(problem, c(0, 1))
+
+cat("Gradient ascent:", result1$theta.hat, "\n")
+cat("Newton-Raphson:", result2$theta.hat, "\n")
+cat("BFGS:", result3$theta.hat, "\n")
 ```
 
-### Gradient Configuration
+## Composing Solvers
 
-For gradient-based methods, you can specify the learning rate:
+### Sequential Chaining (`%>>%`)
 
-```{r config-gradient}
-config_grad <- mle_config_gradient(
-  eta = 0.1,        # Learning rate / step size
-  max_iter = 100,
-  rel_tol = 1e-5
-)
-```
-### Line Search Configuration
+Chain solvers for coarse-to-fine optimization:
 
-Line search adaptively finds good step sizes (recommended for most problems):
+```{r sequential}
+# Grid search finds a good region, then gradient ascent refines
+strategy <- grid_search(lower = c(-10, 0.5), upper = c(10, 5), n = 5) %>>%
+  gradient_ascent(max_iter = 50)
 
-```{r config-linesearch}
-config_ls <- mle_config_linesearch(
-  max_step = 1.0,        # Maximum step size
-  backtrack_ratio = 0.5, # Step reduction factor
-  max_iter = 100,
-  rel_tol = 1e-5
-)
+result <- strategy(problem, theta0 = c(0, 1))
+cat("Result:", result$theta.hat, "\n")
 ```
 
-## Core Solvers
+### Three-Stage Refinement
 
-### Gradient Ascent
+```{r three-stage}
+# Coarse grid -> gradient ascent -> Newton-Raphson polish
+strategy <- grid_search(lower = c(-10, 0.5), upper = c(10, 5), n = 5) %>>%
+  gradient_ascent(max_iter = 30) %>>%
+  newton_raphson(max_iter = 10)
 
-Gradient ascent uses the score function (gradient of log-likelihood) to
-iteratively climb toward the maximum:
-
-```{r gradient-ascent}
-# Simple quadratic problem: maximize -(x^2 + y^2)
-loglike <- function(theta) -(theta[1]^2 + theta[2]^2)
-score <- function(theta) -2 * theta
-
-result <- mle_gradient_ascent(
-  loglike = loglike,
-  score = score,
-  theta0 = c(5, 5),
-  config = mle_config_linesearch(max_iter = 50)
-)
-
-cat("Solution:", result$theta.hat, "\n")
-cat("Iterations:", result$iter, "\n")
+result <- strategy(problem, theta0 = c(0, 1))
+cat("Result:", result$theta.hat, "\n")
+cat("Converged:", result$converged, "\n")
 ```
 
-### Newton-Raphson
+### Parallel Racing (`%|%`)
 
-Newton-Raphson uses second-order information (Fisher information matrix) for
-faster convergence:
+Race multiple methods and keep the best result:
 
-```{r newton-raphson}
-# Same problem with Newton-Raphson
-fisher <- function(theta) matrix(c(2, 0, 0, 2), nrow = 2)
+```{r race}
+# Try gradient-based and derivative-free methods
+strategy <- gradient_ascent() %|% bfgs() %|% nelder_mead()
 
-result_nr <- mle_newton_raphson(
-  loglike = loglike,
-  score = score,
-  fisher = fisher,
-  theta0 = c(5, 5),
-  config = mle_config_linesearch(max_iter = 20)
+result <- strategy(problem, theta0 = c(0, 1))
+cat("Winner:", result$solver, "\n")
+cat("Result:", result$theta.hat, "\n")
+```
+
+### Random Restarts
+
+Escape local optima with multiple starting points:
+
+```{r restarts}
+strategy <- with_restarts(
+  gradient_ascent(),
+  n = 10,
+  sampler = uniform_sampler(c(-10, 0.5), c(10, 5))
 )
 
-cat("Solution:", result_nr$theta.hat, "\n")
-cat("Iterations:", result_nr$iter, "\n")
+result <- strategy(problem, theta0 = c(0, 1))
+cat("Best restart:", result$best_restart, "of", result$n_restarts, "\n")
+cat("Result:", result$theta.hat, "\n")
 ```
 
-### Convenience Wrappers
+### Conditional Refinement
 
-For quick prototyping, use the convenience wrappers:
+Only refine if the first solver didn't converge:
 
-```{r convenience}
-# Quick gradient ascent
-result <- mle_grad(loglike, score, theta0 = c(5, 5), max_iter = 50)
+```{r conditional}
+strategy <- unless_converged(
+  gradient_ascent(max_iter = 10),  # Quick attempt
 
-# Quick Newton-Raphson
-result <- mle_nr(loglike, score, fisher, theta0 = c(5, 5), max_iter = 20)
+  newton_raphson(max_iter = 50)     # Refine if needed
+)
+
+result <- strategy(problem, theta0 = c(0, 1))
+cat("Result:", result$theta.hat, "\n")
 ```
 
-## Constrained Optimization
+## Available Solvers
 
-Use `mle_constraint` to define domain constraints:
+| Factory | Method | Requires |
+|---------|--------|----------|
+| `gradient_ascent()` | Steepest ascent with line search | score (or numerical) |
+| `newton_raphson()` | Second-order Newton | score, fisher (or numerical) |
+| `bfgs()` | Quasi-Newton BFGS | score (or numerical) |
+| `lbfgsb()` | L-BFGS-B with box constraints | score (or numerical) |
+| `nelder_mead()` | Simplex (derivative-free) | - |
+| `grid_search()` | Exhaustive grid | - |
+| `random_search()` | Random sampling | - |
 
+## Constraints
+
+Define domain constraints with support checking and projection:
 ```{r constraints}
-# Constrain parameters to be positive
-constraint <- mle_constraint(
+# Positive parameters
+pos_constraint <- mle_constraint(
   support = function(theta) all(theta > 0),
   project = function(theta) pmax(theta, 1e-8)
 )
@@ -206,194 +193,87 @@ box_constraint <- mle_constraint(
   support = function(theta) all(theta >= 0 & theta <= 10),
   project = function(theta) pmax(0, pmin(10, theta))
 )
-```
 
-## Meta-Solvers
-
-### Grid Search
-
-Grid search evaluates the likelihood on a grid, useful for finding good starting points:
-
-```{r grid-search}
-loglike <- function(theta) -(theta[1] - 3)^2 - (theta[2] + 2)^2
-
-result <- mle_grid_search(
-  loglike = loglike,
-  lower = c(-5, -5),
-  upper = c(5, 5),
-  grid_size = 10
+# Use in problem definition
+problem_constrained <- mle_problem(
+  loglike = function(theta) -sum((theta - 5)^2),
+  constraint = pos_constraint
 )
-
-cat("Best grid point:", result$theta.hat, "\n")
-cat("Points evaluated:", result$n_evaluated, "\n")
-```
-
-### Random Restart
-
-Random restart runs multiple optimizations from random starting points,
-helping escape local optima:
-
-```{r random-restart}
-loglike <- function(theta) -sum(theta^2)
-score <- function(theta) -2 * theta
-
-# Define how to sample starting points
-sampler <- function() runif(2, -10, 10)
-
-result <- mle_random_restart(
-  loglike = loglike,
-  solver = mle_grad,
-  theta0_sampler = sampler,
-  n_trials = 10,
-  score = score,
-  max_iter = 30
-)
-
-cat("Best solution:", result$theta.hat, "\n")
-cat("Successful trials:", result$successful_trials, "/", result$n_trials, "\n")
 ```
 
 ## Function Transformers
 
-### Stochastic Gradient Ascent
+### Stochastic Gradient (Mini-batching)
 
-For large datasets, use subsampling to create stochastic gradients:
+For large datasets, subsample observations:
 
 ```{r subsampling, eval=FALSE}
-# Large dataset
-data <- rnorm(100000, mean = 5, sd = 2)
-
-loglike_full <- function(theta, obs = data) {
-  sum(dnorm(obs, mean = theta[1], sd = theta[2], log = TRUE))
+# Original log-likelihood uses all data
+loglike_full <- function(theta, obs = large_data) {
+  sum(dnorm(obs, theta[1], theta[2], log = TRUE))
 }
 
-# Subsample only 100 observations per iteration
-loglike_stoch <- with_subsampling(
-  loglike_full,
-  data = data,
-  subsample_size = 100
-)
-
-# Each evaluation uses a different random subsample
-loglike_stoch(c(5, 2))
+# Stochastic version uses random subsets
+loglike_sgd <- with_subsampling(loglike_full, data = large_data, subsample_size = 100)
 ```
 
-### Penalized Likelihood
+### Regularization
 
-Add regularization penalties to prevent overfitting:
+Add penalty terms for regularization:
 
 ```{r penalties}
 loglike <- function(theta) -sum(theta^2)
 
-# L1 penalty (LASSO)
+# L1 (Lasso), L2 (Ridge), Elastic Net
 loglike_l1 <- with_penalty(loglike, penalty_l1(), lambda = 0.1)
-
-# L2 penalty (Ridge)
 loglike_l2 <- with_penalty(loglike, penalty_l2(), lambda = 0.1)
+loglike_enet <- with_penalty(loglike, penalty_elastic_net(alpha = 0.5), lambda = 0.1)
 
-# Elastic net (mix of L1 and L2)
-loglike_enet <- with_penalty(
-  loglike,
-  penalty_elastic_net(alpha = 0.5),
-  lambda = 0.1
-)
-
-# Compare values
 theta <- c(1, 2, 3)
 cat("Original:", loglike(theta), "\n")
 cat("With L1:", loglike_l1(theta), "\n")
 cat("With L2:", loglike_l2(theta), "\n")
-cat("With Elastic Net:", loglike_enet(theta), "\n")
 ```
 
-## Tracking Optimization Progress
+## Tracing Optimization
 
-Enable tracing to record the optimization path:
+Track the optimization path for diagnostics:
 
 ```{r trace}
-loglike <- function(theta) -(theta[1]^2 + theta[2]^2)
-score <- function(theta) -2 * theta
+trace_config <- mle_trace(values = TRUE, path = TRUE, gradients = TRUE)
 
-config <- mle_config_linesearch(max_iter = 20, trace = TRUE)
-
-result <- mle_gradient_ascent(
-  loglike = loglike,
-  score = score,
-  theta0 = c(5, 5),
-  config = config
+result <- gradient_ascent(max_iter = 20)(
+  problem,
+  theta0 = c(0, 1),
+  trace = trace_config
 )
 
-# The path is stored in result$path
-if (!is.null(result$path)) {
-  cat("Optimization path (first 5 steps):\n")
-  print(head(result$path, 5))
+if (!is.null(result$trace_data)) {
+  cat("Iterations:", result$trace_data$total_iterations, "\n")
+  cat("Final log-likelihood:", tail(result$trace_data$values, 1), "\n")
 }
 ```
 
-## Complete Workflow Example
+## API Summary
 
-Here's a complete example fitting a Poisson regression:
-
-```{r poisson, eval=FALSE}
-# Simulate Poisson data
-set.seed(42)
-n <- 200
-x <- runif(n, 0, 5)
-true_beta <- c(0.5, 0.3)  # intercept and slope
-lambda_true <- exp(true_beta[1] + true_beta[2] * x)
-y <- rpois(n, lambda_true)
-
-# Log-likelihood for Poisson regression
-loglike <- function(beta) {
-  eta <- beta[1] + beta[2] * x
-  lambda <- exp(eta)
-  sum(dpois(y, lambda, log = TRUE))
-}
-
-# Score function
-score <- function(beta) {
-  eta <- beta[1] + beta[2] * x
-  lambda <- exp(eta)
-  resid <- y - lambda
-  c(sum(resid), sum(resid * x))
-}
-
-# Fit model
-result <- mle_grad(
-  loglike, score,
-  theta0 = c(0, 0),
-  max_iter = 100
-)
-
-cat("Estimated coefficients:", result$theta.hat, "\n")
-cat("True coefficients:", true_beta, "\n")
-```
-
-## API Reference
-
-The main functions in the package are:
-
-**Configuration:**
-
-- `mle_config()` - Base configuration
-- `mle_config_gradient()` - Gradient descent configuration
-- `mle_config_linesearch()` - Line search configuration
+**Problem Specification:**
+- `mle_problem()` - Define the estimation problem
 - `mle_constraint()` - Domain constraints
 
-**Solvers:**
+**Solver Factories:**
+- `gradient_ascent()`, `newton_raphson()`, `bfgs()`, `lbfgsb()`, `nelder_mead()`
+- `grid_search()`, `random_search()`
 
-- `mle_gradient_ascent()` - Gradient ascent optimizer
-- `mle_newton_raphson()` - Newton-Raphson optimizer
-- `mle_grid_search()` - Grid search
-- `mle_random_restart()` - Random restart wrapper
+**Composition:**
+- `%>>%` - Sequential chaining
+- `%|%` - Parallel racing
+- `with_restarts()` - Multiple starting points
+- `unless_converged()` - Conditional refinement
+- `compose()` - Compose multiple solvers
 
-**Convenience:**
-
-- `mle_grad()` - Quick gradient ascent
-- `mle_nr()` - Quick Newton-Raphson
+**Samplers:**
+- `uniform_sampler()`, `normal_sampler()`
 
 **Transformers:**
-
-- `with_subsampling()` - Stochastic gradient via subsampling
-- `with_penalty()` - Add penalty/regularization term
-- `penalty_l1()`, `penalty_l2()`, `penalty_elastic_net()` - Penalty functions
+- `with_subsampling()`, `with_penalty()`
+- `penalty_l1()`, `penalty_l2()`, `penalty_elastic_net()`

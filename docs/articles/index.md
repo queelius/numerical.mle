@@ -3,7 +3,7 @@
 ### Getting Started
 
 - [Getting Started with
-  numerical.mle](https://queelius.github.io/compositional.mle/articles/getting-started.md):
+  compositional.mle](https://queelius.github.io/compositional.mle/articles/getting-started.md):
 
 ### Understanding MLE
 

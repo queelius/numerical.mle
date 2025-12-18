@@ -11,7 +11,7 @@ Source:
 [`DESCRIPTION`](https://github.com/queelius/compositional.mle/blob/HEAD/DESCRIPTION)
 
 Towell A (2025). *compositional.mle: Compositional Maximum Likelihood
-Estimation*. R package version 0.1.0,
+Estimation*. R package version 0.2.0,
 https://queelius.github.io/compositional.mle/,
 <https://github.com/queelius/compositional.mle>.
 
@@ -19,7 +19,7 @@ https://queelius.github.io/compositional.mle/,
       title = {compositional.mle: Compositional Maximum Likelihood Estimation},
       author = {Alexander Towell},
       year = {2025},
-      note = {R package version 0.1.0,
+      note = {R package version 0.2.0,
         https://queelius.github.io/compositional.mle/},
       url = {https://github.com/queelius/compositional.mle},
     }

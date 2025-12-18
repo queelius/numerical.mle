@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5
 )
-library(numerical.mle)
+library(compositional.mle)
 ```
 
 ## What is Maximum Likelihood Estimation?
@@ -185,22 +185,21 @@ legend("topright", c("Small (0.001)", "Good (0.01)", "Large (0.05)"),
 2. If it doesn't improve the objective enough, shrink it
 3. Repeat until we find an acceptable step
 
-This is implemented in `mle_config_linesearch()`:
-
 ```{r line-search-demo}
-result <- mle_gradient_ascent(
+# Define the problem
+problem <- mle_problem(
   loglike = loglike,
   score = score,
-  theta0 = c(1, 0.8),
-  config = mle_config_linesearch(max_iter = 50, trace = TRUE),
   constraint = mle_constraint(
     support = function(theta) theta[2] > 0,
     project = function(theta) c(theta[1], max(theta[2], 1e-6))
   )
 )
 
+result <- gradient_ascent(max_iter = 50)(problem, theta0 = c(1, 0.8))
+
 cat("Final estimate:", round(result$theta.hat, 4), "\n")
-cat("Iterations:", result$iter, "\n")
+cat("Iterations:", result$iterations, "\n")
 cat("Converged:", result$converged, "\n")
 ```
 
@@ -257,65 +256,58 @@ fisher <- function(theta) {
   ), nrow = 2)
 }
 
-# Run gradient ascent
-result_ga <- mle_gradient_ascent(
-  loglike = loglike,
-  score = score,
-  theta0 = c(1, 0.8),
-  config = mle_config_linesearch(max_iter = 100, trace = TRUE),
-  constraint = mle_constraint(
-    support = function(theta) theta[2] > 0,
-    project = function(theta) c(theta[1], max(theta[2], 1e-6))
-  )
-)
-
-# Run Newton-Raphson
-result_nr <- mle_newton_raphson(
+# Define problem with Fisher information
+problem_with_fisher <- mle_problem(
   loglike = loglike,
   score = score,
   fisher = fisher,
-  theta0 = c(1, 0.8),
-  config = mle_config_linesearch(max_iter = 100, trace = TRUE),
   constraint = mle_constraint(
     support = function(theta) theta[2] > 0,
     project = function(theta) c(theta[1], max(theta[2], 1e-6))
   )
 )
 
-cat("Gradient Ascent: ", result_ga$iter, "iterations\n")
-cat("Newton-Raphson:  ", result_nr$iter, "iterations\n")
+# Run gradient ascent
+result_ga <- gradient_ascent(max_iter = 100)(problem, theta0 = c(1, 0.8))
+
+# Run Newton-Raphson
+result_nr <- newton_raphson(max_iter = 100)(problem_with_fisher, theta0 = c(1, 0.8))
+
+cat("Gradient Ascent: ", result_ga$iterations, "iterations\n")
+cat("Newton-Raphson:  ", result_nr$iterations, "iterations\n")
 ```
 
 Newton-Raphson typically converges much faster, especially near the optimum
 where its quadratic convergence kicks in.
 
+## Composing Solvers
+
+The `compositional.mle` package lets you **compose** optimization strategies:
+
+```{r compose-demo}
+# Coarse-to-fine: grid search finds a good region, Newton polishes
+strategy <- grid_search(lower = c(0, 0.1), upper = c(6, 4), n = 5) %>>%
+  newton_raphson(max_iter = 20)
+
+result <- strategy(problem_with_fisher, theta0 = c(1, 0.8))
+cat("Result:", round(result$theta.hat, 4), "\n")
+
+# Race different methods, pick the best
+strategy <- gradient_ascent() %|% bfgs() %|% nelder_mead()
+result <- strategy(problem, theta0 = c(1, 0.8))
+cat("Winner:", result$solver, "\n")
+```
+
 ## When to Use Which Method
 
-### Use Gradient Ascent When:
-
-- You don't have (or can't easily compute) the Fisher information
-- The problem is high-dimensional (computing $I^{-1}$ is expensive)
-- You're using stochastic gradients (mini-batches)
-- Getting a rough answer quickly is acceptable
-
-### Use Newton-Raphson When:
-
-- You need high precision
-- The Fisher information is available and cheap to compute
-- The problem is low-to-moderate dimensional
-- Fast convergence is important
-
-### Use Grid Search When:
-
-- The parameter space is small (1-3 dimensions)
-- You need a good starting point
-- The likelihood surface might have multiple modes
-
-### Use Random Restart When:
-
-- The likelihood surface has multiple local maxima
-- You're uncertain about good starting values
-- Robustness is more important than speed
+| Method | Information | Best For |
+|--------|-------------|----------|
+| `gradient_ascent()` | Score only | Large problems, rough estimates |
+| `newton_raphson()` | Score + Fisher | High precision, small problems |
+| `bfgs()` | Score only | Quasi-Newton, good balance |
+| `nelder_mead()` | Likelihood only | Derivative-free, robust |
+| `grid_search()` | Likelihood only | Finding starting points |
+| `with_restarts()` | Varies | Multi-modal problems |
 
 ## Constrained Optimization
 
@@ -327,24 +319,12 @@ Real problems often have **constraints** on parameters:
 
 ### Projection Method
 
-The `numerical.mle` package uses **projection**: if a step takes us outside the
+The `compositional.mle` package uses **projection**: if a step takes us outside the
 feasible region, we project back to the nearest feasible point.
 
 ```{r constraint-demo}
-# Without constraint: optimization might fail
-constraint <- mle_constraint(
-  support = function(theta) theta[2] > 0,
-  project = function(theta) c(theta[1], max(theta[2], 1e-6))
-)
-
 # The constraint keeps sigma positive throughout optimization
-result <- mle_gradient_ascent(
-  loglike = loglike,
-  score = score,
-  theta0 = c(0, 0.1),  # Start near the boundary
-  config = mle_config_linesearch(max_iter = 100),
-  constraint = constraint
-)
+result <- gradient_ascent(max_iter = 100)(problem, theta0 = c(0, 0.1))
 
 cat("Final sigma:", result$theta.hat[2], "> 0 (constraint satisfied)\n")
 ```
@@ -382,66 +362,18 @@ where $P(\theta)$ is a penalty function and $\lambda > 0$ controls regularizatio
 - $\alpha$ controls the mix
 
 ```{r penalty-demo}
-# Original log-likelihood (maximum at theta = 0)
-loglike <- function(theta) -sum((theta - c(3, 2))^2)
+# Original log-likelihood (maximum at theta = (3,2))
+loglike_simple <- function(theta) -sum((theta - c(3, 2))^2)
 
 # Add L2 penalty
-loglike_l2 <- with_penalty(loglike, penalty_l2(), lambda = 1)
+loglike_l2 <- with_penalty(loglike_simple, penalty_l2(), lambda = 1)
 
 # Compare
 theta <- c(3, 2)
 cat("At theta = (3, 2):\n")
-cat("  Original:", loglike(theta), "\n")
+cat("  Original:", loglike_simple(theta), "\n")
 cat("  With L2 penalty:", loglike_l2(theta), "\n")
 cat("  The penalty shrinks the solution toward zero\n")
-```
-
-## Stochastic Gradient Methods
-
-For large datasets, computing the full gradient is expensive. **Stochastic
-gradient ascent** uses random subsamples:
-
-$$\theta^{(t+1)} = \theta^{(t)} + \eta \cdot \hat{s}(\theta^{(t)})$$
-
-where $\hat{s}$ is computed on a mini-batch of data.
-
-### Properties
-
-- **Noisy but unbiased**: On average, we move in the right direction
-- **Faster iterations**: Each step is cheap
-- **Implicit regularization**: Noise can help escape local optima
-- **Requires care**: Learning rate schedules, momentum, etc.
-
-```{r stochastic-concept, eval=FALSE}
-# Concept demonstration (not run)
-loglike_full <- function(theta, obs = large_data) {
-  sum(dnorm(obs, theta[1], theta[2], log = TRUE))
-}
-
-# Use only 100 observations per iteration
-loglike_mini <- with_subsampling(
-  loglike_full,
-  data = large_data,
-  subsample_size = 100
-)
-```
-
-## Convergence Criteria
-
-The package checks for convergence using:
-
-1. **Absolute tolerance**: $|\ell(\theta^{(t+1)}) - \ell(\theta^{(t)})| < \epsilon_{abs}$
-2. **Relative tolerance**: $\frac{|\ell(\theta^{(t+1)}) - \ell(\theta^{(t)})|}{|\ell(\theta^{(t)})|} < \epsilon_{rel}$
-3. **Parameter change**: $\|\theta^{(t+1)} - \theta^{(t)}\| < \epsilon$
-4. **Maximum iterations**: Safety stop
-
-```{r convergence-config}
-config <- mle_config(
-  max_iter = 500,     # Don't run forever
-  abs_tol = 1e-8,     # Absolute change threshold
-  rel_tol = 1e-6,     # Relative change threshold
-  debug = FALSE       # Set TRUE to see iteration progress
-)
 ```
 
 ## Summary
@@ -450,12 +382,13 @@ config <- mle_config(
 |--------|-------|-------------------|----------|
 | Gradient Ascent | 1st | Score only | Large problems, rough estimates |
 | Newton-Raphson | 2nd | Score + Fisher | High precision, small problems |
+| BFGS | Quasi-2nd | Score only | Good balance |
+| Nelder-Mead | 0th | Likelihood only | Robust, derivative-free |
 | Grid Search | 0th | Likelihood only | Finding starting points |
-| Random Restart | - | Varies | Multi-modal problems |
 
-The `numerical.mle` package provides a unified interface to all these methods,
-with composable configuration objects and function transformers to handle
-real-world complexities like constraints, regularization, and large datasets.
+The `compositional.mle` package provides composable solvers that can be chained
+(`%>>%`), raced (`%|%`), or restarted (`with_restarts()`) to handle real-world
+complexities like constraints, regularization, and multimodal surfaces.
 
 ## Further Reading
 

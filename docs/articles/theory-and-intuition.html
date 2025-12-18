@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">compositional.mle</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -265,23 +265,23 @@ step size:</p>
 <li>If it doesn’t improve the objective enough, shrink it</li>
 <li>Repeat until we find an acceptable step</li>
 </ol>
-<p>This is implemented in <code><a href="../reference/mle_config_linesearch.html">mle_config_linesearch()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># Define the problem</span></span>
+<span><span class="va">problem</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_problem.html">mle_problem</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score</span>,</span>
-<span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>  config <span class="op">=</span> <span class="fu"><a href="../reference/mle_config_linesearch.html">mle_config_linesearch</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">50</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  constraint <span class="op">=</span> <span class="fu"><a href="../reference/mle_constraint.html">mle_constraint</a></span><span class="op">(</span></span>
 <span>    support <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
 <span>    project <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gradient_ascent.html">gradient_ascent</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">(</span><span class="va">problem</span>, theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final estimate:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">theta.hat</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Final estimate: 2.9472 1.7103</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iterations:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">iter</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iterations: 8</span></span>
+<span><span class="co">#&gt; Final estimate: 2.9465 1.7099</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iterations:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">iterations</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Iterations: 19</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Converged:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">converged</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Converged: FALSE</span></span></code></pre></div>
 </div>
@@ -370,82 +370,93 @@ which:</p>
 <span>  <span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Run gradient ascent</span></span>
-<span><span class="va">result_ga</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
-<span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
-<span>  score <span class="op">=</span> <span class="va">score</span>,</span>
-<span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>  config <span class="op">=</span> <span class="fu"><a href="../reference/mle_config_linesearch.html">mle_config_linesearch</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">100</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  constraint <span class="op">=</span> <span class="fu"><a href="../reference/mle_constraint.html">mle_constraint</a></span><span class="op">(</span></span>
-<span>    support <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
-<span>    project <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run Newton-Raphson</span></span>
-<span><span class="va">result_nr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_newton_raphson.html" class="external-link">mle_newton_raphson</a></span><span class="op">(</span></span>
+<span><span class="co"># Define problem with Fisher information</span></span>
+<span><span class="va">problem_with_fisher</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_problem.html">mle_problem</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score</span>,</span>
 <span>  fisher <span class="op">=</span> <span class="va">fisher</span>,</span>
-<span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>  config <span class="op">=</span> <span class="fu"><a href="../reference/mle_config_linesearch.html">mle_config_linesearch</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">100</span>, trace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  constraint <span class="op">=</span> <span class="fu"><a href="../reference/mle_constraint.html">mle_constraint</a></span><span class="op">(</span></span>
 <span>    support <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
 <span>    project <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Gradient Ascent: "</span>, <span class="va">result_ga</span><span class="op">$</span><span class="va">iter</span>, <span class="st">"iterations\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Gradient Ascent:  8 iterations</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Newton-Raphson:  "</span>, <span class="va">result_nr</span><span class="op">$</span><span class="va">iter</span>, <span class="st">"iterations\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Newton-Raphson:   11 iterations</span></span></code></pre></div>
+<span><span class="co"># Run gradient ascent</span></span>
+<span><span class="va">result_ga</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gradient_ascent.html">gradient_ascent</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">(</span><span class="va">problem</span>, theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run Newton-Raphson</span></span>
+<span><span class="va">result_nr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newton_raphson.html">newton_raphson</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">(</span><span class="va">problem_with_fisher</span>, theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Gradient Ascent: "</span>, <span class="va">result_ga</span><span class="op">$</span><span class="va">iterations</span>, <span class="st">"iterations\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Gradient Ascent:  19 iterations</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Newton-Raphson:  "</span>, <span class="va">result_nr</span><span class="op">$</span><span class="va">iterations</span>, <span class="st">"iterations\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Newton-Raphson:   20 iterations</span></span></code></pre></div>
 <p>Newton-Raphson typically converges much faster, especially near the
 optimum where its quadratic convergence kicks in.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="composing-solvers">Composing Solvers<a class="anchor" aria-label="anchor" href="#composing-solvers"></a>
+</h2>
+<p>The <code>compositional.mle</code> package lets you
+<strong>compose</strong> optimization strategies:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Coarse-to-fine: grid search finds a good region, Newton polishes</span></span>
+<span><span class="va">strategy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/grid_search.html">grid_search</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span>, upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">4</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="../reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/newton_raphson.html">newton_raphson</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">strategy</span><span class="op">(</span><span class="va">problem_with_fisher</span>, theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Result:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">theta.hat</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Result: 2.9465 1.7099</span></span>
+<span></span>
+<span><span class="co"># Race different methods, pick the best</span></span>
+<span><span class="va">strategy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gradient_ascent.html">gradient_ascent</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/grapes-or-grapes.html">%|%</a></span> <span class="fu"><a href="../reference/bfgs.html">bfgs</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/grapes-or-grapes.html">%|%</a></span> <span class="fu"><a href="../reference/nelder_mead.html">nelder_mead</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">strategy</span><span class="op">(</span><span class="va">problem</span>, theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Winner:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">solver</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Winner: gradient_ascent</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="when-to-use-which-method">When to Use Which Method<a class="anchor" aria-label="anchor" href="#when-to-use-which-method"></a>
 </h2>
-<div class="section level3">
-<h3 id="use-gradient-ascent-when">Use Gradient Ascent When:<a class="anchor" aria-label="anchor" href="#use-gradient-ascent-when"></a>
-</h3>
-<ul>
-<li>You don’t have (or can’t easily compute) the Fisher information</li>
-<li>The problem is high-dimensional (computing
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>I</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">I^{-1}</annotation></semantics></math>
-is expensive)</li>
-<li>You’re using stochastic gradients (mini-batches)</li>
-<li>Getting a rough answer quickly is acceptable</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="use-newton-raphson-when">Use Newton-Raphson When:<a class="anchor" aria-label="anchor" href="#use-newton-raphson-when"></a>
-</h3>
-<ul>
-<li>You need high precision</li>
-<li>The Fisher information is available and cheap to compute</li>
-<li>The problem is low-to-moderate dimensional</li>
-<li>Fast convergence is important</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="use-grid-search-when">Use Grid Search When:<a class="anchor" aria-label="anchor" href="#use-grid-search-when"></a>
-</h3>
-<ul>
-<li>The parameter space is small (1-3 dimensions)</li>
-<li>You need a good starting point</li>
-<li>The likelihood surface might have multiple modes</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="use-random-restart-when">Use Random Restart When:<a class="anchor" aria-label="anchor" href="#use-random-restart-when"></a>
-</h3>
-<ul>
-<li>The likelihood surface has multiple local maxima</li>
-<li>You’re uncertain about good starting values</li>
-<li>Robustness is more important than speed</li>
-</ul>
-</div>
+<table class="table">
+<thead><tr class="header">
+<th>Method</th>
+<th>Information</th>
+<th>Best For</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="../reference/gradient_ascent.html">gradient_ascent()</a></code></td>
+<td>Score only</td>
+<td>Large problems, rough estimates</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/newton_raphson.html">newton_raphson()</a></code></td>
+<td>Score + Fisher</td>
+<td>High precision, small problems</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/bfgs.html">bfgs()</a></code></td>
+<td>Score only</td>
+<td>Quasi-Newton, good balance</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/nelder_mead.html">nelder_mead()</a></code></td>
+<td>Likelihood only</td>
+<td>Derivative-free, robust</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/grid_search.html">grid_search()</a></code></td>
+<td>Likelihood only</td>
+<td>Finding starting points</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/with_restarts.html">with_restarts()</a></code></td>
+<td>Varies</td>
+<td>Multi-modal problems</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="constrained-optimization">Constrained Optimization<a class="anchor" aria-label="anchor" href="#constrained-optimization"></a>
@@ -466,27 +477,15 @@ parameters:</p>
 <div class="section level3">
 <h3 id="projection-method">Projection Method<a class="anchor" aria-label="anchor" href="#projection-method"></a>
 </h3>
-<p>The <code>numerical.mle</code> package uses
+<p>The <code>compositional.mle</code> package uses
 <strong>projection</strong>: if a step takes us outside the feasible
 region, we project back to the nearest feasible point.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Without constraint: optimization might fail</span></span>
-<span><span class="va">constraint</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_constraint.html">mle_constraint</a></span><span class="op">(</span></span>
-<span>  support <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
-<span>  project <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># The constraint keeps sigma positive throughout optimization</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
-<span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
-<span>  score <span class="op">=</span> <span class="va">score</span>,</span>
-<span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span>,  <span class="co"># Start near the boundary</span></span>
-<span>  config <span class="op">=</span> <span class="fu"><a href="../reference/mle_config_linesearch.html">mle_config_linesearch</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
-<span>  constraint <span class="op">=</span> <span class="va">constraint</span></span>
-<span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The constraint keeps sigma positive throughout optimization</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gradient_ascent.html">gradient_ascent</a></span><span class="op">(</span>max_iter <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">(</span><span class="va">problem</span>, theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final sigma:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">theta.hat</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="st">"&gt; 0 (constraint satisfied)\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Final sigma: 1.710644 &gt; 0 (constraint satisfied)</span></span></code></pre></div>
+<span><span class="co">#&gt; Final sigma: 1.709855 &gt; 0 (constraint satisfied)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -534,91 +533,24 @@ controls regularization strength.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>
 controls the mix</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Original log-likelihood (maximum at theta = 0)</span></span>
-<span><span class="va">loglike</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">theta</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Original log-likelihood (maximum at theta = (3,2))</span></span>
+<span><span class="va">loglike_simple</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">theta</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add L2 penalty</span></span>
-<span><span class="va">loglike_l2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_penalty.html">with_penalty</a></span><span class="op">(</span><span class="va">loglike</span>, <span class="fu"><a href="../reference/penalty_l2.html">penalty_l2</a></span><span class="op">(</span><span class="op">)</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">loglike_l2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_penalty.html">with_penalty</a></span><span class="op">(</span><span class="va">loglike_simple</span>, <span class="fu"><a href="../reference/penalty_l2.html">penalty_l2</a></span><span class="op">(</span><span class="op">)</span>, lambda <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compare</span></span>
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"At theta = (3, 2):\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; At theta = (3, 2):</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Original:"</span>, <span class="fu">loglike</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  Original:"</span>, <span class="fu">loglike_simple</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Original: 0</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  With L2 penalty:"</span>, <span class="fu">loglike_l2</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   With L2 penalty: -13</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  The penalty shrinks the solution toward zero\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   The penalty shrinks the solution toward zero</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="stochastic-gradient-methods">Stochastic Gradient Methods<a class="anchor" aria-label="anchor" href="#stochastic-gradient-methods"></a>
-</h2>
-<p>For large datasets, computing the full gradient is expensive.
-<strong>Stochastic gradient ascent</strong> uses random subsamples:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><mi>η</mi><mo>⋅</mo><mover><mi>s</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\theta^{(t+1)} = \theta^{(t)} + \eta \cdot \hat{s}(\theta^{(t)})</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>s</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{s}</annotation></semantics></math>
-is computed on a mini-batch of data.</p>
-<div class="section level3">
-<h3 id="properties">Properties<a class="anchor" aria-label="anchor" href="#properties"></a>
-</h3>
-<ul>
-<li>
-<strong>Noisy but unbiased</strong>: On average, we move in the
-right direction</li>
-<li>
-<strong>Faster iterations</strong>: Each step is cheap</li>
-<li>
-<strong>Implicit regularization</strong>: Noise can help escape
-local optima</li>
-<li>
-<strong>Requires care</strong>: Learning rate schedules, momentum,
-etc.</li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Concept demonstration (not run)</span></span>
-<span><span class="va">loglike_full</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span>, <span class="va">obs</span> <span class="op">=</span> <span class="va">large_data</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">obs</span>, <span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">theta</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Use only 100 observations per iteration</span></span>
-<span><span class="va">loglike_mini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/with_subsampling.html">with_subsampling</a></span><span class="op">(</span></span>
-<span>  <span class="va">loglike_full</span>,</span>
-<span>  data <span class="op">=</span> <span class="va">large_data</span>,</span>
-<span>  subsample_size <span class="op">=</span> <span class="fl">100</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="convergence-criteria">Convergence Criteria<a class="anchor" aria-label="anchor" href="#convergence-criteria"></a>
-</h2>
-<p>The package checks for convergence using:</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Absolute tolerance</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><msub><mi>ϵ</mi><mrow><mi>a</mi><mi>b</mi><mi>s</mi></mrow></msub></mrow><annotation encoding="application/x-tex">|\ell(\theta^{(t+1)}) - \ell(\theta^{(t)})| &lt; \epsilon_{abs}</annotation></semantics></math>
-</li>
-<li>
-<strong>Relative tolerance</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mo stretchy="true" form="prefix">|</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mrow><mo stretchy="true" form="prefix">|</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow></mfrac><mo>&lt;</mo><msub><mi>ϵ</mi><mrow><mi>r</mi><mi>e</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\frac{|\ell(\theta^{(t+1)}) - \ell(\theta^{(t)})|}{|\ell(\theta^{(t)})|} &lt; \epsilon_{rel}</annotation></semantics></math>
-</li>
-<li>
-<strong>Parameter change</strong>:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>−</mo><msup><mi>θ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="postfix">∥</mo><mo>&lt;</mo><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\|\theta^{(t+1)} - \theta^{(t)}\| &lt; \epsilon</annotation></semantics></math>
-</li>
-<li>
-<strong>Maximum iterations</strong>: Safety stop</li>
-</ol>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_config.html">mle_config</a></span><span class="op">(</span></span>
-<span>  max_iter <span class="op">=</span> <span class="fl">500</span>,     <span class="co"># Don't run forever</span></span>
-<span>  abs_tol <span class="op">=</span> <span class="fl">1e-8</span>,     <span class="co"># Absolute change threshold</span></span>
-<span>  rel_tol <span class="op">=</span> <span class="fl">1e-6</span>,     <span class="co"># Relative change threshold</span></span>
-<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>       <span class="co"># Set TRUE to see iteration progress</span></span>
-<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
@@ -650,23 +582,30 @@ etc.</li>
 <td>High precision, small problems</td>
 </tr>
 <tr class="odd">
+<td>BFGS</td>
+<td>Quasi-2nd</td>
+<td>Score only</td>
+<td>Good balance</td>
+</tr>
+<tr class="even">
+<td>Nelder-Mead</td>
+<td>0th</td>
+<td>Likelihood only</td>
+<td>Robust, derivative-free</td>
+</tr>
+<tr class="odd">
 <td>Grid Search</td>
 <td>0th</td>
 <td>Likelihood only</td>
 <td>Finding starting points</td>
 </tr>
-<tr class="even">
-<td>Random Restart</td>
-<td>-</td>
-<td>Varies</td>
-<td>Multi-modal problems</td>
-</tr>
 </tbody>
 </table>
-<p>The <code>numerical.mle</code> package provides a unified interface
-to all these methods, with composable configuration objects and function
-transformers to handle real-world complexities like constraints,
-regularization, and large datasets.</p>
+<p>The <code>compositional.mle</code> package provides composable
+solvers that can be chained (<code>%&gt;&gt;%</code>), raced
+(<code>%|%</code>), or restarted (<code><a href="../reference/with_restarts.html">with_restarts()</a></code>) to
+handle real-world complexities like constraints, regularization, and
+multimodal surfaces.</p>
 </div>
 <div class="section level2">
 <h2 id="further-reading">Further Reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
