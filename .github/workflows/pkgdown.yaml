@@ -11,6 +11,10 @@ on:
 
 name: pkgdown
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
