@@ -1,72 +1,58 @@
-#' is_converged
+#' Check if solver converged
 #'
-#' Function to determine whether a `mle_numerical` object has converged.
-#'
-#' @param x the `mle` object
-#' @param ... additional arguments to pass
+#' @param x An mle result object
+#' @param ... Additional arguments (unused)
+#' @return Logical indicating convergence
 #' @export
 is_converged <- function(x, ...) {
-    UseMethod("is_converged")
+  UseMethod("is_converged")
 }
 
 #' @export
 is_converged.mle_numerical <- function(x, ...) {
-    x$converged
+  isTRUE(x$converged)
 }
 
-#' is_mle_numerical
-#' 
-#' Function to determine whether an object `x` is of type `mle_numerical`.
+#' @export
+is_converged.default <- function(x, ...) {
+  if (!is.null(x$converged)) {
+    isTRUE(x$converged)
+  } else if (!is.null(x$convergence)) {
+    x$convergence == 0
+ } else {
+    NA
+  }
+}
+
+#' Check if object is an mle_numerical
 #'
-#' @param x the `mle` object
-#' @param ... additional arguments to pass
+#' @param x Object to test
+#' @return Logical
 #' @export
 is_mle_numerical <- function(x) {
-    inherits(x, "mle_numerical")
+  inherits(x, "mle_numerical")
 }
 
-#' num_iterations
-#' @param x the `mle` object
-#' @param ... additional arguments to pass
-#' @return the number of iterations used to find the MLE
-#' @examples
-#' loglike <- function(theta) {
-#'    -sum(dnorm(theta, mean = theta[1], sd = theta[2], log = TRUE))
-#' }
-#' score <- function(theta) {
-#'   -numDeriv::grad(loglike, theta)
-#' }
-#' sol <- mle_gradient_raphson(theta0 = theta, score = score, loglike = loglike)
-#' num_iterations(sol)
+#' Get number of iterations
+#'
+#' @param x An mle result object
+#' @param ... Additional arguments (unused)
+#' @return Number of iterations
 #' @export
 num_iterations <- function(x, ...) {
-    UseMethod("num_iterations")
+  UseMethod("num_iterations")
 }
 
 #' @export
 num_iterations.mle_numerical <- function(x, ...) {
-    x$iter
+  x$iterations %||% x$iter %||% NA_integer_
 }
 
-#' mle_numerical
-#' 
-#' a constructor for the mle_numerical class.
-#' @importFrom algebraic.mle mle
 #' @export
-mle_numerical <- function(theta.hat, loglike, score, info, sigma, iter, converged) {
-    stopifnot(is.numeric(iter))
-    stopifnot(is.logical(converged))
-
-    sol <- mle(
-        theta.hat = theta.hat,
-        loglike = loglike,
-        score = score,
-        info = info,
-        sigma = sigma,
-        superclasses = c("mle_numerical"))
-
-    sol$iter <- iter
-    sol$converged <- converged
-    sol
+num_iterations.default <- function(x, ...) {
+  x$iterations %||% x$iter %||% NA_integer_
 }
 
+#' Null coalescing operator
+#' @keywords internal
+`%||%` <- function(x, y) if (is.null(x)) y else x

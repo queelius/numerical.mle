@@ -8,18 +8,18 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/queelius/numerical.mle/blob/HEAD/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/queelius/compositional.mle/blob/HEAD/DESCRIPTION)
 
-Towell A (2025). *numerical.mle: Numerical maximum likelihood
-estimation*. R package version 0.1.0,
-https://queelius.github.io/numerical.mle/,
-<https://github.com/queelius/numerical.mle>.
+Towell A (2025). *compositional.mle: Compositional Maximum Likelihood
+Estimation*. R package version 0.1.0,
+https://queelius.github.io/compositional.mle/,
+<https://github.com/queelius/compositional.mle>.
 
     @Manual{,
-      title = {numerical.mle: Numerical maximum likelihood estimation},
+      title = {compositional.mle: Compositional Maximum Likelihood Estimation},
       author = {Alexander Towell},
       year = {2025},
       note = {R package version 0.1.0,
-        https://queelius.github.io/numerical.mle/},
-      url = {https://github.com/queelius/numerical.mle},
+        https://queelius.github.io/compositional.mle/},
+      url = {https://github.com/queelius/compositional.mle},
     }

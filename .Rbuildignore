@@ -1,2 +1,14 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^CLAUDE\.md$
+^LICENSE\.md$
+^README\.Rmd$
+^REFACTORING_SUMMARY\.md$
+^TESTING_SUMMARY\.md$
+^fixing$
+^cran-comments\.md$
+^\.Rcheck$

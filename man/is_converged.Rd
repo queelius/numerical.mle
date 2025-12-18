@@ -2,15 +2,18 @@
 % Please edit documentation in R/generic_functions.R
 \name{is_converged}
 \alias{is_converged}
-\title{is_converged}
+\title{Check if solver converged}
 \usage{
 is_converged(x, ...)
 }
 \arguments{
-\item{x}{the `mle` object}
+\item{x}{An mle result object}
 
-\item{...}{additional arguments to pass}
+\item{...}{Additional arguments (unused)}
+}
+\value{
+Logical indicating convergence
 }
 \description{
-Function to determine whether a `mle_numerical` object has converged.
+Check if solver converged
 }

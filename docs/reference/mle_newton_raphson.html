@@ -98,27 +98,13 @@ Newton-Raphson benefits from line search to ensure stability.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>mle_numerical object with class mle_newton_raphson containing:</p>
-<dl><dt>theta.hat</dt>
-<dd><p>MLE estimate</p></dd>
+    <p>mle_numerical object (from algebraic.mle) with class mle_newton_raphson
+  containing the standard mle fields plus:</p>
+<dl><dt>converged</dt>
+<dd><p>Convergence status (logical)</p></dd>
 
-  <dt>loglike</dt>
-<dd><p>Log-likelihood at MLE</p></dd>
-
-  <dt>score</dt>
-<dd><p>Score vector at MLE (should be near zero)</p></dd>
-
-  <dt>info</dt>
-<dd><p>Fisher information matrix</p></dd>
-
-  <dt>sigma</dt>
-<dd><p>Covariance matrix (inverse of Fisher information)</p></dd>
-
-  <dt>iter</dt>
-<dd><p>Number of iterations</p></dd>
-
-  <dt>converged</dt>
-<dd><p>Convergence status</p></dd>
+  <dt>sol</dt>
+<dd><p>Raw optimization result with optim()-compatible fields</p></dd>
 
   <dt>config</dt>
 <dd><p>Configuration used</p></dd>

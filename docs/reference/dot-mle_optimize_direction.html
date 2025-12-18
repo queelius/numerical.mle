@@ -87,7 +87,27 @@ This is an internal function not meant to be called directly by users.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>mle_numerical object with optimization results</p>
+    <p>List with optim()-compatible format:</p>
+<dl><dt>par</dt>
+<dd><p>Final parameter estimates</p></dd>
+
+  <dt>value</dt>
+<dd><p>Log-likelihood at solution</p></dd>
+
+  <dt>convergence</dt>
+<dd><p>0 if converged, 1 otherwise</p></dd>
+
+  <dt>iterations</dt>
+<dd><p>Number of iterations taken</p></dd>
+
+  <dt>path</dt>
+<dd><p>Optimization path (if trace=TRUE)</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Returns an optim()-compatible list that can be passed to
+algebraic.mle::mle_numerical().</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

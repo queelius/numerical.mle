@@ -1,4 +1,4 @@
-url: https://queelius.github.io/numerical.mle/
+url: https://queelius.github.io/compositional.mle/
 
 template:
   bootstrap: 5
@@ -20,34 +20,44 @@ navbar:
         href: articles/case-studies.html
 
 reference:
-- title: Configuration
-  desc: Create configuration objects for optimization algorithms
+- title: Problem Specification
+  desc: Define the statistical estimation problem
   contents:
-  - mle_config
-  - mle_config_gradient
-  - mle_config_linesearch
+  - mle_problem
+  - update.mle_problem
+  - is_mle_problem
+  - get_score
+  - get_fisher
   - mle_constraint
-  - is_mle_config
   - is_mle_constraint
 
-- title: Core Solvers
-  desc: Main optimization algorithms
+- title: Solver Factories
+  desc: Create solver functions
   contents:
-  - mle_gradient_ascent
-  - mle_newton_raphson
+  - gradient_ascent
+  - newton_raphson
+  - fisher_scoring
+  - bfgs
+  - lbfgsb
+  - nelder_mead
+  - grid_search
+  - random_search
 
-- title: Meta-Solvers
-  desc: Global optimization strategies
+- title: Composition Operators
+  desc: Combine solvers into strategies
   contents:
-  - mle_grid_search
-  - mle_random_restart
+  - compose
+  - "%>>%"
+  - "%|%"
+  - with_restarts
+  - unless_converged
 
-- title: Convenience Wrappers
-  desc: Quick access to solvers with sensible defaults
+- title: Samplers
+  desc: Starting point generators for restarts
+
   contents:
-  - mle_grad
-  - mle_nr
-  - with_constraint
+  - uniform_sampler
+  - normal_sampler
 
 - title: Function Transformers
   desc: Transform log-likelihood functions
@@ -57,20 +67,27 @@ reference:
   - penalty_l1
   - penalty_l2
   - penalty_elastic_net
-  - compose
 
-- title: Generic Methods
-  desc: Methods for mle_numerical objects
+- title: Configuration
+  desc: Type-safe configuration objects
+  contents:
+  - mle_config
+  - mle_config_gradient
+  - mle_config_linesearch
+  - is_mle_config
+
+- title: Tracing
+  desc: Track optimization progress
+  contents:
+  - mle_trace
+  - is_tracing
+
+- title: Results
+  desc: Work with optimization results
   contents:
   - is_converged
   - is_mle_numerical
   - num_iterations
-  - mle_numerical
-
-- title: Package
-  desc: Package documentation
-  contents:
-  - numerical.mle
 
 articles:
 - title: Getting Started

@@ -1,6 +1,6 @@
-# is_converged
+# Check if solver converged
 
-Function to determine whether a \`mle_numerical\` object has converged.
+Check if solver converged
 
 ## Usage
 
@@ -12,8 +12,12 @@ is_converged(x, ...)
 
 - x:
 
-  the \`mle\` object
+  An mle result object
 
 - ...:
 
-  additional arguments to pass
+  Additional arguments (unused)
+
+## Value
+
+Logical indicating convergence

@@ -81,53 +81,49 @@ loglike_transformed <- loglike %>%
 
 ### Core Configuration (`R/config.R`)
 
-- [`mle_config()`](https://queelius.github.io/numerical.mle/reference/mle_config.md) -
+- [`mle_config()`](https://queelius.github.io/compositional.mle/reference/mle_config.md) -
   Base configuration for all solvers
-- [`mle_config_gradient()`](https://queelius.github.io/numerical.mle/reference/mle_config_gradient.md) -
+- [`mle_config_gradient()`](https://queelius.github.io/compositional.mle/reference/mle_config_gradient.md) -
   Configuration for gradient-based methods
-- [`mle_config_linesearch()`](https://queelius.github.io/numerical.mle/reference/mle_config_linesearch.md) -
+- [`mle_config_linesearch()`](https://queelius.github.io/compositional.mle/reference/mle_config_linesearch.md) -
   Configuration with backtracking line search
-- [`mle_constraint()`](https://queelius.github.io/numerical.mle/reference/mle_constraint.md) -
+- [`mle_constraint()`](https://queelius.github.io/compositional.mle/reference/mle_constraint.md) -
   Domain constraint specification
 - Helper functions:
-  [`is_mle_config()`](https://queelius.github.io/numerical.mle/reference/is_mle_config.md),
-  [`is_mle_constraint()`](https://queelius.github.io/numerical.mle/reference/is_mle_constraint.md)
+  [`is_mle_config()`](https://queelius.github.io/compositional.mle/reference/is_mle_config.md),
+  [`is_mle_constraint()`](https://queelius.github.io/compositional.mle/reference/is_mle_constraint.md)
 
 ### Internal Optimizer (`R/internal_optimize.R`)
 
-- [`.mle_optimize_direction()`](https://queelius.github.io/numerical.mle/reference/dot-mle_optimize_direction.md) -
-  Unified internal optimizer used by all gradient-based solvers
-- [`.make_convergence_checker()`](https://queelius.github.io/numerical.mle/reference/dot-make_convergence_checker.md) -
-  Creates convergence check functions
-- [`.print_iteration()`](https://queelius.github.io/numerical.mle/reference/dot-print_iteration.md) -
-  Debug output formatting
-- [`.backtracking_step()`](https://queelius.github.io/numerical.mle/reference/dot-backtracking_step.md) -
-  Improved line search implementation
-- [`.generate_grid()`](https://queelius.github.io/numerical.mle/reference/dot-generate_grid.md) -
-  Grid generation for grid search
+- `.mle_optimize_direction()` - Unified internal optimizer used by all
+  gradient-based solvers
+- `.make_convergence_checker()` - Creates convergence check functions
+- `.print_iteration()` - Debug output formatting
+- `.backtracking_step()` - Improved line search implementation
+- `.generate_grid()` - Grid generation for grid search
 
 ### Function Transformers (`R/transformers.R`)
 
-- [`with_subsampling()`](https://queelius.github.io/numerical.mle/reference/with_subsampling.md) -
+- [`with_subsampling()`](https://queelius.github.io/compositional.mle/reference/with_subsampling.md) -
   Stochastic gradient descent via subsampling
-- [`with_penalty()`](https://queelius.github.io/numerical.mle/reference/with_penalty.md) -
+- [`with_penalty()`](https://queelius.github.io/compositional.mle/reference/with_penalty.md) -
   Add penalty terms (regularization)
-- [`penalty_l1()`](https://queelius.github.io/numerical.mle/reference/penalty_l1.md) -
+- [`penalty_l1()`](https://queelius.github.io/compositional.mle/reference/penalty_l1.md) -
   L1/LASSO penalty
-- [`penalty_l2()`](https://queelius.github.io/numerical.mle/reference/penalty_l2.md) -
+- [`penalty_l2()`](https://queelius.github.io/compositional.mle/reference/penalty_l2.md) -
   L2/Ridge penalty
-- [`penalty_elastic_net()`](https://queelius.github.io/numerical.mle/reference/penalty_elastic_net.md) -
+- [`penalty_elastic_net()`](https://queelius.github.io/compositional.mle/reference/penalty_elastic_net.md) -
   Combined L1+L2 penalty
-- [`compose()`](https://queelius.github.io/numerical.mle/reference/compose.md) -
+- [`compose()`](https://queelius.github.io/compositional.mle/reference/compose.md) -
   Function composition utility
 
 ### Convenience Wrappers (`R/convenience.R`)
 
-- [`mle_grad()`](https://queelius.github.io/numerical.mle/reference/mle_grad.md) -
+- [`mle_grad()`](https://rdrr.io/pkg/numerical.mle/man/mle_grad.html) -
   Quick gradient ascent with defaults
-- [`mle_nr()`](https://queelius.github.io/numerical.mle/reference/mle_nr.md) -
+- [`mle_nr()`](https://rdrr.io/pkg/numerical.mle/man/mle_nr.html) -
   Quick Newton-Raphson with defaults
-- [`with_constraint()`](https://queelius.github.io/numerical.mle/reference/with_constraint.md) -
+- [`with_constraint()`](https://rdrr.io/pkg/numerical.mle/man/with_constraint.html) -
   Simplified constrained optimization
 
 ## Files Refactored
@@ -136,8 +132,7 @@ loglike_transformed <- loglike %>%
 
 - **New signature**: `(loglike, score, theta0, config, constraint)`
 - **Old signature**: `(theta0, score, options)`
-- Uses internal
-  [`.mle_optimize_direction()`](https://queelius.github.io/numerical.mle/reference/dot-mle_optimize_direction.md)
+- Uses internal `.mle_optimize_direction()`
 - Automatic Fisher information computation via numerical Hessian
 - Comprehensive documentation with examples
 

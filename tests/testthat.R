@@ -1,4 +1,4 @@
 library(testthat)
-library(numerical.mle)
+library(compositional.mle)
 
-test_check("numerical.mle")
+test_check("compositional.mle")

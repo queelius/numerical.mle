@@ -1,7 +1,6 @@
-# is_mle_numerical
+# Check if object is an mle_numerical
 
-Function to determine whether an object \`x\` is of type
-\`mle_numerical\`.
+Check if object is an mle_numerical
 
 ## Usage
 
@@ -13,8 +12,8 @@ is_mle_numerical(x)
 
 - x:
 
-  the \`mle\` object
+  Object to test
 
-- ...:
+## Value
 
-  additional arguments to pass
+Logical

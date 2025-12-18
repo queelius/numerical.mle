@@ -44,4 +44,29 @@ internal function not meant to be called directly by users.
 
 ## Value
 
-mle_numerical object with optimization results
+List with optim()-compatible format:
+
+- par:
+
+  Final parameter estimates
+
+- value:
+
+  Log-likelihood at solution
+
+- convergence:
+
+  0 if converged, 1 otherwise
+
+- iterations:
+
+  Number of iterations taken
+
+- path:
+
+  Optimization path (if trace=TRUE)
+
+## Details
+
+Returns an optim()-compatible list that can be passed to
+algebraic.mle::mle_numerical().

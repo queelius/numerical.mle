@@ -53,35 +53,16 @@ mle_newton_raphson(
 
 ## Value
 
-mle_numerical object with class mle_newton_raphson containing:
-
-- theta.hat:
-
-  MLE estimate
-
-- loglike:
-
-  Log-likelihood at MLE
-
-- score:
-
-  Score vector at MLE (should be near zero)
-
-- info:
-
-  Fisher information matrix
-
-- sigma:
-
-  Covariance matrix (inverse of Fisher information)
-
-- iter:
-
-  Number of iterations
+mle_numerical object (from algebraic.mle) with class mle_newton_raphson
+containing the standard mle fields plus:
 
 - converged:
 
-  Convergence status
+  Convergence status (logical)
+
+- sol:
+
+  Raw optimization result with optim()-compatible fields
 
 - config:
 

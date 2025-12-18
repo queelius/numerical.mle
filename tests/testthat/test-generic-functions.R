@@ -1,68 +1,53 @@
 # Tests for generic functions
 
-test_that("mle_numerical constructor creates valid objects", {
-  # Create a simple mle_numerical object
-  result <- mle_numerical(
-    theta.hat = c(0, 1),
-    loglike = -10,
-    score = c(0.01, 0.02),
-    info = matrix(c(1, 0, 0, 1), nrow = 2),
-    sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-    iter = 50L,
-    converged = TRUE
+# Helper function to create mle_numerical object using optim-style output
+# This uses algebraic.mle::mle_numerical() which takes optim()-style input
+create_test_mle_numerical <- function(par, value, convergence = 0L,
+                                       iterations = 50L, hessian = NULL) {
+  sol <- list(
+    par = par,
+    value = value,
+    convergence = convergence,
+    hessian = hessian
   )
+  result <- algebraic.mle::mle_numerical(sol = sol)
+  result$iterations <- iterations
+  result
+}
+
+test_that("mle_numerical objects from algebraic.mle work correctly", {
+  # Create a simple mle_numerical object using optim-style output
+  sol <- list(
+    par = c(0, 1),
+    value = -10,
+    convergence = 0L,
+    hessian = -matrix(c(1, 0, 0, 1), nrow = 2)
+  )
+
+  result <- algebraic.mle::mle_numerical(sol = sol)
 
   expect_true(inherits(result, "mle_numerical"))
   expect_true(inherits(result, "mle"))
-  expect_equal(result$iter, 50L)
-  expect_true(result$converged)
-})
-
-test_that("mle_numerical validates inputs", {
-  expect_error(
-    mle_numerical(
-      theta.hat = c(0, 1),
-      loglike = -10,
-      score = c(0.01, 0.02),
-      info = matrix(c(1, 0, 0, 1), nrow = 2),
-      sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-      iter = "not a number",
-      converged = TRUE
-    )
-  )
-
-  expect_error(
-    mle_numerical(
-      theta.hat = c(0, 1),
-      loglike = -10,
-      score = c(0.01, 0.02),
-      info = matrix(c(1, 0, 0, 1), nrow = 2),
-      sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-      iter = 50L,
-      converged = "not logical"
-    )
-  )
+  expect_true(result$converged)  # convergence == 0 means converged
+  expect_equal(result$theta.hat, c(0, 1))
+  expect_equal(result$loglike, -10)
 })
 
 test_that("is_converged works correctly", {
-  converged_result <- mle_numerical(
-    theta.hat = c(0, 1),
-    loglike = -10,
-    score = c(0.01, 0.02),
-    info = matrix(c(1, 0, 0, 1), nrow = 2),
-    sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-    iter = 50L,
-    converged = TRUE
+  # Converged result (convergence = 0)
+  converged_result <- create_test_mle_numerical(
+    par = c(0, 1),
+    value = -10,
+    convergence = 0L,
+    iterations = 50L
   )
 
-  not_converged_result <- mle_numerical(
-    theta.hat = c(0, 1),
-    loglike = -10,
-    score = c(0.01, 0.02),
-    info = matrix(c(1, 0, 0, 1), nrow = 2),
-    sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-    iter = 100L,
-    converged = FALSE
+  # Not converged result (convergence = 1)
+  not_converged_result <- create_test_mle_numerical(
+    par = c(0, 1),
+    value = -10,
+    convergence = 1L,
+    iterations = 100L
   )
 
   expect_true(is_converged(converged_result))
@@ -70,14 +55,11 @@ test_that("is_converged works correctly", {
 })
 
 test_that("is_mle_numerical works correctly", {
-  result <- mle_numerical(
-    theta.hat = c(0, 1),
-    loglike = -10,
-    score = c(0.01, 0.02),
-    info = matrix(c(1, 0, 0, 1), nrow = 2),
-    sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-    iter = 50L,
-    converged = TRUE
+  result <- create_test_mle_numerical(
+    par = c(0, 1),
+    value = -10,
+    convergence = 0L,
+    iterations = 50L
   )
 
   expect_true(is_mle_numerical(result))
@@ -88,48 +70,76 @@ test_that("is_mle_numerical works correctly", {
 })
 
 test_that("num_iterations works correctly", {
-  result <- mle_numerical(
-    theta.hat = c(0, 1),
-    loglike = -10,
-    score = c(0.01, 0.02),
-    info = matrix(c(1, 0, 0, 1), nrow = 2),
-    sigma = matrix(c(1, 0, 0, 1), nrow = 2),
-    iter = 75L,
-    converged = TRUE
+  result <- create_test_mle_numerical(
+    par = c(0, 1),
+    value = -10,
+    convergence = 0L,
+    iterations = 75L
   )
 
   expect_equal(num_iterations(result), 75L)
 })
 
+test_that("num_iterations handles both field names", {
+  # Test with 'iterations' field
+  result1 <- create_test_mle_numerical(
+    par = c(0, 1),
+    value = -10,
+    convergence = 0L,
+    iterations = 42L
+  )
+  expect_equal(num_iterations(result1), 42L)
+
+  # Test with legacy 'iter' field
+  result2 <- algebraic.mle::mle_numerical(
+    sol = list(par = c(0, 1), value = -10, convergence = 0L)
+  )
+  result2$iter <- 33L
+  expect_equal(num_iterations(result2), 33L)
+})
+
 test_that("generic functions work with solver results", {
   # Test with actual solver output
-  set.seed(123)
-  x <- rnorm(100, mean = 5, sd = 2)
-
-  loglike <- function(theta) {
-    if (theta[2] <= 0) return(-Inf)
-    sum(dnorm(x, mean = theta[1], sd = theta[2], log = TRUE))
-  }
-
-  score <- function(theta) {
-    if (theta[2] <= 0) return(c(NA, NA))
-    mu <- theta[1]
-    sigma <- theta[2]
-    n <- length(x)
-    d_mu <- sum(x - mu) / sigma^2
-    d_sigma <- -n / sigma + sum((x - mu)^2) / sigma^3
-    c(d_mu, d_sigma)
-  }
-
-  result <- mle_gradient_ascent(
-    loglike = loglike,
-    score = score,
-    theta0 = c(0, 1),
-    config = mle_config_linesearch(max_iter = 200)
+  problem <- mle_problem(
+    loglike = function(theta) {
+      if (theta[2] <= 0) return(-Inf)
+      -(theta[1] - 5)^2 - (theta[2] - 2)^2
+    },
+    score = function(theta) {
+      c(-2 * (theta[1] - 5), -2 * (theta[2] - 2))
+    },
+    constraint = mle_constraint(
+      support = function(theta) theta[2] > 0,
+      project = function(theta) c(theta[1], max(theta[2], 1e-6))
+    )
   )
+
+  solver <- gradient_ascent(max_iter = 200)
+  result <- solver(problem, c(0, 1))
 
   expect_true(is_mle_numerical(result))
   expect_true(is.logical(is_converged(result)))
   expect_true(is.numeric(num_iterations(result)))
   expect_true(num_iterations(result) > 0)
+})
+
+test_that("is_mle_problem works correctly", {
+  problem <- mle_problem(
+    loglike = function(theta) -sum(theta^2)
+  )
+
+  expect_true(is_mle_problem(problem))
+  expect_false(is_mle_problem(list(loglike = function(x) x)))
+  expect_false(is_mle_problem(NULL))
+})
+
+test_that("is_mle_constraint works correctly", {
+  constraint <- mle_constraint(
+    support = function(theta) all(theta > 0),
+    project = function(theta) pmax(theta, 0)
+  )
+
+  expect_true(is_mle_constraint(constraint))
+  expect_false(is_mle_constraint(list(support = function(x) TRUE)))
+  expect_false(is_mle_constraint(NULL))
 })

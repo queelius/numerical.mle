@@ -2,15 +2,16 @@
 % Please edit documentation in R/generic_functions.R
 \name{is_mle_numerical}
 \alias{is_mle_numerical}
-\title{is_mle_numerical}
+\title{Check if object is an mle_numerical}
 \usage{
 is_mle_numerical(x)
 }
 \arguments{
-\item{x}{the `mle` object}
-
-\item{...}{additional arguments to pass}
+\item{x}{Object to test}
+}
+\value{
+Logical
 }
 \description{
-Function to determine whether an object `x` is of type `mle_numerical`.
+Check if object is an mle_numerical
 }

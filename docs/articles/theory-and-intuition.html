@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Theory and Intuition Behind Numerical MLE • numerical.mle</title>
+<title>Theory and Intuition Behind Numerical MLE • compositional.mle</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">numerical.mle</a>
+    <a class="navbar-brand me-2" href="../index.html">compositional.mle</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -43,7 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/numerical.mle/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/compositional.mle/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -61,9 +61,9 @@
                         <h4 data-toc-skip class="author">Alexander
 Towell</h4>
             
-            <h4 data-toc-skip class="date">2025-12-11</h4>
+            <h4 data-toc-skip class="date">2025-12-17</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/queelius/numerical.mle/blob/HEAD/vignettes/theory-and-intuition.Rmd" class="external-link"><code>vignettes/theory-and-intuition.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/queelius/compositional.mle/blob/HEAD/vignettes/theory-and-intuition.Rmd" class="external-link"><code>vignettes/theory-and-intuition.Rmd</code></a></small>
       <div class="d-none name"><code>theory-and-intuition.Rmd</code></div>
     </div>
 
@@ -267,7 +267,7 @@ step size:</p>
 </ol>
 <p>This is implemented in <code><a href="../reference/mle_config_linesearch.html">mle_config_linesearch()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
@@ -371,7 +371,7 @@ which:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Run gradient ascent</span></span>
-<span><span class="va">result_ga</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result_ga</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
@@ -383,7 +383,7 @@ which:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run Newton-Raphson</span></span>
-<span><span class="va">result_nr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_newton_raphson.html">mle_newton_raphson</a></span><span class="op">(</span></span>
+<span><span class="va">result_nr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_newton_raphson.html" class="external-link">mle_newton_raphson</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score</span>,</span>
 <span>  fisher <span class="op">=</span> <span class="va">fisher</span>,</span>
@@ -477,7 +477,7 @@ region, we project back to the nearest feasible point.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The constraint keeps sigma positive throughout optimization</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span>,  <span class="co"># Start near the boundary</span></span>

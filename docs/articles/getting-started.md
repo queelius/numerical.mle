@@ -386,40 +386,40 @@ The main functions in the package are:
 
 **Configuration:**
 
-- [`mle_config()`](https://queelius.github.io/numerical.mle/reference/mle_config.md) -
+- [`mle_config()`](https://queelius.github.io/compositional.mle/reference/mle_config.md) -
   Base configuration
-- [`mle_config_gradient()`](https://queelius.github.io/numerical.mle/reference/mle_config_gradient.md) -
+- [`mle_config_gradient()`](https://queelius.github.io/compositional.mle/reference/mle_config_gradient.md) -
   Gradient descent configuration
-- [`mle_config_linesearch()`](https://queelius.github.io/numerical.mle/reference/mle_config_linesearch.md) -
+- [`mle_config_linesearch()`](https://queelius.github.io/compositional.mle/reference/mle_config_linesearch.md) -
   Line search configuration
-- [`mle_constraint()`](https://queelius.github.io/numerical.mle/reference/mle_constraint.md) -
+- [`mle_constraint()`](https://queelius.github.io/compositional.mle/reference/mle_constraint.md) -
   Domain constraints
 
 **Solvers:**
 
-- [`mle_gradient_ascent()`](https://queelius.github.io/numerical.mle/reference/mle_gradient_ascent.md) -
+- [`mle_gradient_ascent()`](https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html) -
   Gradient ascent optimizer
-- [`mle_newton_raphson()`](https://queelius.github.io/numerical.mle/reference/mle_newton_raphson.md) -
+- [`mle_newton_raphson()`](https://rdrr.io/pkg/numerical.mle/man/mle_newton_raphson.html) -
   Newton-Raphson optimizer
-- [`mle_grid_search()`](https://queelius.github.io/numerical.mle/reference/mle_grid_search.md) -
+- [`mle_grid_search()`](https://rdrr.io/pkg/numerical.mle/man/mle_grid_search.html) -
   Grid search
-- [`mle_random_restart()`](https://queelius.github.io/numerical.mle/reference/mle_random_restart.md) -
+- [`mle_random_restart()`](https://rdrr.io/pkg/numerical.mle/man/mle_random_restart.html) -
   Random restart wrapper
 
 **Convenience:**
 
-- [`mle_grad()`](https://queelius.github.io/numerical.mle/reference/mle_grad.md) -
+- [`mle_grad()`](https://rdrr.io/pkg/numerical.mle/man/mle_grad.html) -
   Quick gradient ascent
-- [`mle_nr()`](https://queelius.github.io/numerical.mle/reference/mle_nr.md) -
+- [`mle_nr()`](https://rdrr.io/pkg/numerical.mle/man/mle_nr.html) -
   Quick Newton-Raphson
 
 **Transformers:**
 
-- [`with_subsampling()`](https://queelius.github.io/numerical.mle/reference/with_subsampling.md) -
+- [`with_subsampling()`](https://queelius.github.io/compositional.mle/reference/with_subsampling.md) -
   Stochastic gradient via subsampling
-- [`with_penalty()`](https://queelius.github.io/numerical.mle/reference/with_penalty.md) -
+- [`with_penalty()`](https://queelius.github.io/compositional.mle/reference/with_penalty.md) -
   Add penalty/regularization term
-- [`penalty_l1()`](https://queelius.github.io/numerical.mle/reference/penalty_l1.md),
-  [`penalty_l2()`](https://queelius.github.io/numerical.mle/reference/penalty_l2.md),
-  [`penalty_elastic_net()`](https://queelius.github.io/numerical.mle/reference/penalty_elastic_net.md) -
+- [`penalty_l1()`](https://queelius.github.io/compositional.mle/reference/penalty_l1.md),
+  [`penalty_l2()`](https://queelius.github.io/compositional.mle/reference/penalty_l2.md),
+  [`penalty_elastic_net()`](https://queelius.github.io/compositional.mle/reference/penalty_elastic_net.md) -
   Penalty functions

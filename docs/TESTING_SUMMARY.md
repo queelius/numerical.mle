@@ -61,11 +61,11 @@ provides numerical maximum likelihood estimation solvers.
 ### 1. test-generic_functions.R (128 lines, 9 tests)
 
 - `mle_numerical` constructor validation
-- [`is_mle_numerical()`](https://queelius.github.io/numerical.mle/reference/is_mle_numerical.md)
+- [`is_mle_numerical()`](https://queelius.github.io/compositional.mle/reference/is_mle_numerical.md)
   functionality
-- [`is_converged()`](https://queelius.github.io/numerical.mle/reference/is_converged.md)
+- [`is_converged()`](https://queelius.github.io/compositional.mle/reference/is_converged.md)
   and
-  [`num_iterations()`](https://queelius.github.io/numerical.mle/reference/num_iterations.md)
+  [`num_iterations()`](https://queelius.github.io/compositional.mle/reference/num_iterations.md)
   methods
 - `stochastic_loglike()` function with sampling (with/without
   replacement)

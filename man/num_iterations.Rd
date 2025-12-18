@@ -2,28 +2,18 @@
 % Please edit documentation in R/generic_functions.R
 \name{num_iterations}
 \alias{num_iterations}
-\title{num_iterations}
+\title{Get number of iterations}
 \usage{
 num_iterations(x, ...)
 }
 \arguments{
-\item{x}{the `mle` object}
+\item{x}{An mle result object}
 
-\item{...}{additional arguments to pass}
+\item{...}{Additional arguments (unused)}
 }
 \value{
-the number of iterations used to find the MLE
+Number of iterations
 }
 \description{
-num_iterations
-}
-\examples{
-loglike <- function(theta) {
-   -sum(dnorm(theta, mean = theta[1], sd = theta[2], log = TRUE))
-}
-score <- function(theta) {
-  -numDeriv::grad(loglike, theta)
-}
-sol <- mle_gradient_raphson(theta0 = theta, score = score, loglike = loglike)
-num_iterations(sol)
+Get number of iterations
 }

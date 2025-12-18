@@ -178,7 +178,7 @@ legend("topright", c("Small (0.001)", "Good (0.01)", "Large (0.05)"),
 3.  Repeat until we find an acceptable step
 
 This is implemented in
-[`mle_config_linesearch()`](https://queelius.github.io/numerical.mle/reference/mle_config_linesearch.md):
+[`mle_config_linesearch()`](https://queelius.github.io/compositional.mle/reference/mle_config_linesearch.md):
 
 ``` r
 result <- mle_gradient_ascent(

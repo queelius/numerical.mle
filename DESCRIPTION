@@ -1,29 +1,35 @@
-Package: numerical.mle
+Package: compositional.mle
 Type: Package
-Title: Numerical maximum likelihood estimation
-Version: 0.1.0
-Authors@R: 
+Title: Compositional Maximum Likelihood Estimation
+Version: 0.2.0
+Authors@R:
     person("Alexander", "Towell", , "lex@metafunctor.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6443-9897"))
-Maintainer: Alexander Towell <lex@metafunctor.com>
-Description: We define a set of functions for solving common MLE problems.
+Description: Provides composable optimization strategies for maximum likelihood
+    estimation (MLE). Solvers are first-class functions that combine via
+    sequential chaining, parallel racing, and random restarts. Implements
+    gradient ascent, Newton-Raphson, quasi-Newton (BFGS), and derivative-free
+    methods with support for constrained optimization and tracing. Returns
+    'mle' objects compatible with 'algebraic.mle' for downstream analysis.
 License: MIT + file LICENSE
 Encoding: UTF-8
 ByteCompile: true
-LazyData: true
+Depends:
+    R (>= 3.5.0)
 Imports:
     algebraic.mle,
-    stats
-RoxygenNote: 7.3.3
-URL: https://github.com/queelius/numerical.mle,
-    https://queelius.github.io/numerical.mle/
-BugReports: https://github.com/queelius/numerical.mle/issues
-Suggests: 
+    MASS,
+    numDeriv
+Suggests:
     rmarkdown,
     dplyr,
     knitr,
     ggplot2,
     tibble,
     testthat (>= 3.0.0)
+URL: https://github.com/queelius/compositional.mle,
+    https://queelius.github.io/compositional.mle/
+BugReports: https://github.com/queelius/compositional.mle/issues
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+RoxygenNote: 7.3.3

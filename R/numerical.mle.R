@@ -1,11 +1,65 @@
-#' `numerical.mle`: A package for numerically solving maximum likelihood estimators
-#' from log-likelihood functions.
+#' @keywords internal
+"_PACKAGE"
+
+#' compositional.mle: Composable MLE Solvers
 #'
-#' The object representing a fitted model is a type of `mle` object, the maximum
-#' likelihood estimator of the model with respect to observed data. We use the
-#' R package `algebraic.mle` to represent these objects.
+#' A domain-specific language for maximum likelihood estimation where solvers
+#' are first-class composable functions. Following SICP principles, solvers
+#' combine via sequential chaining, parallel racing, and iteration to build
+#' sophisticated optimization strategies from simple primitives.
 #'
-#' @docType package
-#' @name numerical.mle
+#' @section The Problem Abstraction:
+#' \code{\link{mle_problem}} encapsulates a statistical estimation problem:
+#' \itemize{
+#'   \item Log-likelihood function
+#'   \item Optional analytic score and Fisher information (computed numerically if not provided)
+#'   \item Domain constraints
+#'   \item Metadata (parameter names, observation count)
+#' }
+#'
+#' @section Solver Factories:
+#' Solver factories return solver functions with signature
+#' \code{(problem, theta0, trace) -> mle_result}:
+#' \itemize{
+#'   \item \code{\link{gradient_ascent}}: First-order gradient method
+#'   \item \code{\link{newton_raphson}}: Second-order Newton's method
+#'   \item \code{\link{bfgs}}: Quasi-Newton BFGS
+#'   \item \code{\link{nelder_mead}}: Derivative-free simplex
+#'   \item \code{\link{grid_search}}: Exhaustive grid search
+#' }
+#'
+#' @section Composition Operators:
+#' Combine solvers to build complex strategies:
+#' \itemize{
+#'   \item \code{\link{\%>>\%}}: Sequential chaining (coarse-to-fine)
+#'   \item \code{\link{\%|\%}}: Parallel racing (try multiple, pick best)
+#'   \item \code{\link{with_restarts}}: Multiple random starting points
+#' }
+#'
+#' @section Tracing:
+#' \code{\link{mle_trace}} configures what to track during optimization
+#' (values, path, gradients, timing) for diagnostics and visualization.
+#'
+#' @examples
+#' \dontrun{
+#' # Define problem
+#' problem <- mle_problem(
+#'   loglike = function(theta) sum(dnorm(data, theta[1], theta[2], log = TRUE)),
+#'   constraint = mle_constraint(support = function(theta) theta[2] > 0)
+#' )
+#'
+#' # Simple solve
+#' result <- gradient_ascent()(problem, c(0, 1))
+#'
+#' # Composed strategy: grid -> gradient -> Newton
+#' strategy <- grid_search(n = 5) %>>% gradient_ascent() %>>% newton_raphson()
+#' result <- strategy(problem, c(0, 1))
+#'
+#' # Race different methods
+#' strategy <- gradient_ascent() %|% bfgs() %|% nelder_mead()
+#' result <- strategy(problem, c(0, 1))
+#' }
+#'
+#' @name compositional.mle-package
+#' @aliases compositional.mle
 NULL
-#> NULL

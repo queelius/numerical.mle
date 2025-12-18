@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Case Studies: MLE for Common Distributions • numerical.mle</title>
+<title>Case Studies: MLE for Common Distributions • compositional.mle</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">numerical.mle</a>
+    <a class="navbar-brand me-2" href="../index.html">compositional.mle</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -43,7 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/numerical.mle/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/compositional.mle/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -61,9 +61,9 @@
                         <h4 data-toc-skip class="author">Alexander
 Towell</h4>
             
-            <h4 data-toc-skip class="date">2025-12-11</h4>
+            <h4 data-toc-skip class="date">2025-12-17</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/queelius/numerical.mle/blob/HEAD/vignettes/case-studies.Rmd" class="external-link"><code>vignettes/case-studies.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/queelius/compositional.mle/blob/HEAD/vignettes/case-studies.Rmd" class="external-link"><code>vignettes/case-studies.Rmd</code></a></small>
       <div class="d-none name"><code>case-studies.Rmd</code></div>
     </div>
 
@@ -117,7 +117,7 @@ lifetimes. It has one parameter: rate
 <h3 id="fitting">Fitting<a class="anchor" aria-label="anchor" href="#fitting"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result_exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">result_exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_exp</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_exp</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -202,7 +202,7 @@ and rate
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Gradient ascent</span></span>
-<span><span class="va">result_ga</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result_ga</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_gamma</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_gamma</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -211,7 +211,7 @@ and rate
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Grid search to find better starting point</span></span>
-<span><span class="va">result_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_grid_search.html">mle_grid_search</a></span><span class="op">(</span></span>
+<span><span class="va">result_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_grid_search.html" class="external-link">mle_grid_search</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_gamma</span>,</span>
 <span>  lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>  upper <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,</span>
@@ -219,7 +219,7 @@ and rate
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Refine with gradient ascent</span></span>
-<span><span class="va">result_refined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result_refined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_gamma</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_gamma</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="va">result_grid</span><span class="op">$</span><span class="va">theta.hat</span>,</span>
@@ -326,7 +326,7 @@ and
 <span><span class="va">alpha_start</span> <span class="op">&lt;-</span> <span class="va">m</span> <span class="op">*</span> <span class="op">(</span><span class="va">m</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">m</span><span class="op">)</span> <span class="op">/</span> <span class="va">v</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">beta_start</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">m</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">m</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">m</span><span class="op">)</span> <span class="op">/</span> <span class="va">v</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">result_beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result_beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_beta</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_beta</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">alpha_start</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">beta_start</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -431,7 +431,7 @@ and scale
 <span>  <span class="op">-</span><span class="va">hess</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">result_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_newton_raphson.html">mle_newton_raphson</a></span><span class="op">(</span></span>
+<span><span class="va">result_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_newton_raphson.html" class="external-link">mle_newton_raphson</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_weibull</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_weibull</span>,</span>
 <span>  fisher <span class="op">=</span> <span class="va">fisher_weibull</span>,</span>
@@ -532,7 +532,7 @@ multimodal. Here we fit a two-component Gaussian mixture.</p>
 <span><span class="va">pi_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">km</span><span class="op">$</span><span class="va">cluster</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">km</span><span class="op">$</span><span class="va">centers</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Fit from the k-means initialization</span></span>
-<span><span class="va">result_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_mix</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_mix</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mu1_init</span>, <span class="va">s1_init</span>, <span class="va">mu2_init</span>, <span class="va">s2_init</span>, <span class="va">pi_init</span><span class="op">)</span>,</span>
@@ -629,7 +629,7 @@ a generalized linear model.</p>
 <h3 id="fitting-2">Fitting<a class="anchor" aria-label="anchor" href="#fitting-2"></a>
 </h3>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result_logistic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_newton_raphson.html">mle_newton_raphson</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">result_logistic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_newton_raphson.html" class="external-link">mle_newton_raphson</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_logistic</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_logistic</span>,</span>
 <span>  fisher <span class="op">=</span> <span class="va">fisher_logistic</span>,</span>
@@ -701,7 +701,7 @@ predictors.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">resid</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.2</span> <span class="op">*</span> <span class="va">beta</span>  <span class="co"># gradient of L2 penalty</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">result_pois</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mle_gradient_ascent.html">mle_gradient_ascent</a></span><span class="op">(</span></span>
+<span><span class="va">result_pois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/numerical.mle/man/mle_gradient_ascent.html" class="external-link">mle_gradient_ascent</a></span><span class="op">(</span></span>
 <span>  loglike <span class="op">=</span> <span class="va">loglike_pois_l2</span>,</span>
 <span>  score <span class="op">=</span> <span class="va">score_pois_l2</span>,</span>
 <span>  theta0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>,</span>
